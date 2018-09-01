@@ -1,0 +1,20 @@
+.menu, .evento-nav{
+  width: 100%;
+  position: static;
+  border-bottom: 1px solid rgb(105,105,105);
+  text-align: left;
+  padding-left: 0px;
+}
+.menu nav{
+  display: table;
+}
+
+.menu li{
+  margin-right: 20px;
+  position: relative;
+  float:left;
+
+}
+.evento-nav h2{
+  margin-top: 0px !important;
+}

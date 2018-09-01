@@ -1,0 +1,26 @@
+*{
+    margin:0;
+    padding: 0;
+}
+body{
+    height: 100vh;
+    width: 100%;
+}
+footer{
+	position: absolute;
+	bottom: 0;
+	height: 35px;
+	width: 100%;
+}
+.formularios{
+	margin-top: 30px;
+}
+.main-content{
+	width: 100%;
+	position: absolute;
+	margin-top: 52px;
+}
+
+nav ul, li{
+	display: table-cell;
+}

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}App{% endblock %}</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script type="text/javascript" src="build/js/app.js"></script>
+        <link rel="stylesheet" type="text/css" href="asset('build/css/app.css')">
+
+        {% block stylesheets %}{% endblock %}
+    </head>
+    <body class="open">
+        {% block content %}{% endblock %}
+
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>
