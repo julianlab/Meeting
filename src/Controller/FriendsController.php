@@ -15,37 +15,30 @@ class FriendsController extends Controller
     public function friends()
     {
         //$this->addFriend('222222222');
-        //$this->removeFriend('222222222');
-        $params = array('friendAndDataList'=>array());
         $em = $this->getDoctrine()->getManager();
         $username = $this->getUser()->getId();
-        $friends = $em->getReference("App:Usuario",$username)->getFriendList();
-        //print_r($friends);
-        foreach ($friends as $key=>$value){
-            $friendFromDatabase = $em->getRepository("App:Usuario")->findOneBy(array('phone' => $value['friendId']));
-            $friend = (object)[
-                'friend'=>$friendFromDatabase,
-                'data'=>$value['date'],
-            ];
-            //print_r($value['date']);
-            array_push($params['friendAndDataList'],$friend);
-        }
+        $friendAndDataList=$this->getUser()->getFriendsWithMe();
+        //$new_friend = $em->getRepository('App:User')->findOneBy(array('phone' => '444444444'));
+        //die($new_friend->getId());
+        //$this->getUser()->addMyFriend($new_friend); 
+        return $this->render('Friends/friends.html.twig', [
+            'friends' => $friendAndDataList
+        ]);
 
-        return $this->render('Friends/friends.html.twig', $params);
+
+
+
     }
 
     /**
      * @param $friendId
      */
-    public function addFriend($friendId){
+    public function addFriend($friendPhone){
         $em = $this->getDoctrine()->getManager();
         $username = $this->getUser()->getId();
-        $fechahora=date("Y-m-d H:i:s");
-        $user=$em->getReference("App:Usuario",$username);
-        $friendList = $user->getFriendList();
-        $newOne = array('friendId'=>$friendId,'date'=>$fechahora);
-        array_push($friendList, $newOne);
-        $user->setFriendList($friendList);
+        
+        $user=$em->getRepository('App:Usuario')->findOneBy(array('username' => $username));
+        
         $em->flush();
     }
     /**
@@ -56,7 +49,8 @@ class FriendsController extends Controller
         $username = $this->getUser()->getId();
         $user=$em->getReference("App:Usuario",$username);
         $friendList = $user->getFriendList();
-        unset($friendList[array_search($friendId, $friendList)]);
+        print_r($friendList);
+        unset($friendList[$friendId]);
         $user->setFriendList($friendList);
         $em->flush();
     }

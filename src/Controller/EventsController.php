@@ -34,7 +34,6 @@ class EventsController extends Controller
             $event->setDescripcion($request->request->get('descripcion'));
             $em->persist($event);
             $em->flush();
-            print_r($event);
         }
         $params['comunidades']=$em->getRepository('App:Comunidades')->findAll();
         return $this->render('Events/firstStep.html.twig',$params);

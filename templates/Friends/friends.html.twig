@@ -1,0 +1,12 @@
+{% extends 'preferencesLayout.html.twig' %}
+{% block preferencesFrame %}
+    <h3>Amistades:</h3>
+    <h4>Lista de amigos </h4>
+    {% for friend in friends %}
+		<p>{{ friend.name }} </p>
+    {% endfor %}
+    <form role="form" action="{{ path('friends') }}" method="post">
+    	<label for="newFriend">Añadir nuevo amigo</label><input type="text" name="_newFriend" class="form-control">
+    	<input type="submit" class="btn btn-default">
+	</form>
+{% endblock %}

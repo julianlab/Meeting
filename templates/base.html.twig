@@ -3,15 +3,16 @@
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}App{% endblock %}</title>
+        <link rel="stylesheet" type="text/css" href="/build/css/app.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <script type="text/javascript" src="build/js/app.js"></script>
-        <link rel="stylesheet" type="text/css" href="asset('build/css/app.css')">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        <script type="text/javascript" src="/build/js/app.js"></script>
 
         {% block stylesheets %}{% endblock %}
     </head>
     <body class="open">
         {% block content %}{% endblock %}
-
         {% block javascripts %}{% endblock %}
     </body>
 </html>
+charset

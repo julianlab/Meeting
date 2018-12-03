@@ -1,0 +1,126 @@
+{% extends 'Home/evento.html.twig' %}
+{% block preferencesFrame %}
+<div class="container">
+    <div>
+        <form role="form" action="{{ path('events') }}" method="post">
+            <div class="row">
+                <div class="form-group col-3">
+                    <span for="comunidad" class="h4">Comunidad: </span>
+                    <select class="form-control" name="comunidad" id="comunidad_select" required>
+                        {% for comunidad in comunidades %}
+                            <option value="{{ comunidad.id }}">{{ comunidad.comunidad }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-3">
+                    <span for="provincia" class="h4">Provincia: </span>
+                    <select class="form-control" name="provincia" id="provincia_select" required></select>
+                </div>
+                <div class="form-group col-3">
+                    <span for="municipio" class="h4">Municipio: </span>
+                    <select class="form-control" name="municipio" id="municipio_select" required></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <span for="fecha" class="h4">Fecha: </span>
+                <div class='input-group date' id='datetimepicker'>
+                    <input type='text' class="form-control" name="fecha"/>
+                    <span class="input-group-addon">
+                        <i class="fa fa-calendar fa-2x"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group">
+                <span for="descripcion">Descripcion: </span>
+                <textarea class="form-control" id="descripcion" maxlength="100" name="descripcion" required>Descripcion</textarea>
+                <span>Max 100 carácteres.</span>
+            </div>
+
+            {#<span>Tipo: </span>
+            {# <lect>
+                <option>Arte</option>
+                <option>Ocio</option>
+                <option>Gastronomía</option>
+                <option>Tecnología</option>
+                <option>Deporte</option>
+                <option>Política</option>
+                <option>Economía</option>
+            </select>
+            <select>
+                <option>Depende</option>
+                <option>de</option>
+                <option>la</option>
+                <option>opcion</option>
+                <option>anterior</option>
+            </select> #}
+            <input type="submit" class="btn" name="submit" value="Crear evento">
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+	<script>
+        window.onload = function(){
+            document.getElementById('provincia_select').addEventListener('change', provincia_change);
+            document.getElementById('comunidad_select').addEventListener('change', comunidad_change);
+            comunidad_change();
+            $(function () {
+                $('#datetimepicker').datetimepicker({format: 'L'});
+            });
+        }
+        /*
+         ·Llaman con ajax a un php y pasan por parametros la comunidad.
+         ·Reciben un json con las provincias.
+         */
+        function comunidad_change(){
+            var comunidad = document.getElementById('comunidad_select').value;
+            $.ajax({
+                method: "POST",
+                data: comunidad,
+                url: "{{ path('ajax_provincias') }}",
+                dataType: 'json',
+                success: function(data){
+                    var provincias = JSON.parse(data.provincias);
+                    putProvincias(provincias);
+                }
+            });
+        }
+        function provincia_change(){
+            var provincia = document.getElementById('provincia_select').value;
+            $.ajax({
+                method: "POST",
+                data: provincia,
+                url: "{{ path('ajax_municipios') }}",
+                dataType: 'json',
+                success: function(data){
+                    var municipios = JSON.parse(data.municipios);
+                    putMunicipios(municipios);
+                }
+            });
+        }
+        /*
+         ·Insertan las provincias en el siguiente select
+         */
+        function putProvincias(provincias){
+            $('#provincia_select').find('option').remove();
+            $.each(provincias, function (i, item) {
+                $('#provincia_select').append($('<option>', {
+                    value: item.id,
+                    text : item.provincia
+                }));
+            });
+            provincia_change();
+
+        }
+        function putMunicipios(municipios){
+            $('#municipio_select').find('option').remove();
+            $.each(municipios, function (i, item) {
+                $('#municipio_select').append($('<option>', {
+                    value: item.id,
+                    text : item.municipio
+                }));
+            });
+        }
+
+	</script>
+{% endblock %}

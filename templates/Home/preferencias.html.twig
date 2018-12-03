@@ -1,0 +1,17 @@
+{% extends 'preferencesLayout.html.twig' %}
+{% block preferencesNav %}
+	<div class="text-center menu">
+		<h1>Preferencias</h1>
+		<nav>
+			<ul class="list-unstyled">
+				<li><a href="{{ path('perfil') }}">Mi perfil</a></li>
+				<li><a href="{{ path('eventos') }}">Mis eventos</a></li>
+				<li><a href="{{ path('seguridad') }}">Seguridad</a></li>
+				<li><a href="{{ path('notificaciones') }}">Notificaciones</a></li>
+				<li><a href="{{ path('conexiones') }}">Conexiones</a></li>
+				<li><a href="{{ path('subscripciones') }}">Subscripciones</a></li>
+			</ul>
+		</nav>
+	</div>
+{% endblock %}
+{% block preferencesFrame %}{% endblock %}

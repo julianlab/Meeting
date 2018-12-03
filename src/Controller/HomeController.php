@@ -29,15 +29,15 @@ class HomeController extends Controller
     /**
      * @Route("/login", name="login")
      */
-    public function login()
+    /*public function login()
     {
         return $this->render("Security/login.html.twig");
-    }
+    }*/
 
     /**
      * @Route("/register", name="register")
      */
-    public function register()
+    /*public function register()
     {
         $em = $this->getDoctrine()->getManager();
         $request = Request::createFromGlobals();
@@ -54,7 +54,7 @@ class HomeController extends Controller
             $em->flush();
         }
         return $this->render("Home/register.html.twig");
-    }
+    }*/
 }
 
 ?>

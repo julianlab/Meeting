@@ -1,22 +1,18 @@
 @media (max-width: 990px) {
   .social-panel{
     background-color: rgb(220,220,220);
-    position: fixed;
-    top:54px;
     left: 0;
     width: 50px !important;
-    height: 100vw;
+    min-height: 92vh;
     content: 'tablet';
   }
 }
 @media (min-width: 990px) {
   .social-panel{
-    position: fixed;
     background-color: rgb(220,220,220);
-    top:54px;
     left: 0;
     width: 230px !important;
-    height: 100vw;
+    min-height: 92vh;
     content: 'pc';
     z-index: 2;
   }

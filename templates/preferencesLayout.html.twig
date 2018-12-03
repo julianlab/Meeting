@@ -1,0 +1,9 @@
+{% extends 'layout.html.twig' %}
+{% block background %}{% endblock %}
+{% block socialPanel %}{{ include('Home/_socialPanel.html.twig') }}{% endblock %}
+{% block contenido %}
+	<div class="col-md-9 col-sm-11 col-11 float-right">
+		{% block preferencesNav %}{% endblock %}
+		{% block preferencesFrame %}{% endblock %}
+	</div>
+{% endblock %}
