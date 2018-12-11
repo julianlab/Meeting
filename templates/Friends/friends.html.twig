@@ -6,7 +6,8 @@
 		<p>{{ friend.name }} </p>
     {% endfor %}
     <form role="form" action="{{ path('friends') }}" method="post">
-    	<label for="newFriend">Añadir nuevo amigo</label><input type="text" name="_newFriend" class="form-control">
+    	<label for="newFriend">Añadir nuevo amigo</label><input type="text" name="newFriend" class="form-control">
+    	<label for="newFriend">Eliminar amigo</label><input type="text" name="oldFriend" class="form-control">
     	<input type="submit" class="btn btn-default">
 	</form>
 {% endblock %}

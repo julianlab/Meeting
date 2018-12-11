@@ -35,7 +35,11 @@ class User extends BaseUser
     private $friendsWithMe;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Evento", mappedBy="events")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Evento", inversedBy="events", cascade={"persist" })
+     * @ORM\JoinTable(name="user_events",
+     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="event_id", referencedColumnName="id", unique=true)}
+     *      )
      */
     private $events;
 
@@ -49,11 +53,17 @@ class User extends BaseUser
      */
     private $surname;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Evento", mappedBy="id_creator")
+     */
+    private $eventos;
+
     public function __construct(){
         parent::__construct();
         $this->myFriends = new ArrayCollection();
         $this->friendsWithMe = new ArrayCollection();
         $this->events = new ArrayCollection();
+        $this->eventos = new ArrayCollection();
         //my own logic xd
     }
 
@@ -137,7 +147,6 @@ class User extends BaseUser
     {
         if (!$this->events->contains($event)) {
             $this->events[] = $event;
-            $event->setEvents($this);
         }
 
         return $this;
@@ -147,10 +156,6 @@ class User extends BaseUser
     {
         if ($this->events->contains($event)) {
             $this->events->removeElement($event);
-            // set the owning side to null (unless already changed)
-            if ($event->getEvents() === $this) {
-                $event->setEvents(null);
-            }
         }
 
         return $this;
@@ -176,6 +181,37 @@ class User extends BaseUser
     public function setSurname(string $surname): self
     {
         $this->surname = $surname;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Evento[]
+     */
+    public function getEventos(): Collection
+    {
+        return $this->eventos;
+    }
+
+    public function addEvento(Evento $evento): self
+    {
+        if (!$this->eventos->contains($evento)) {
+            $this->eventos[] = $evento;
+            $evento->setIdCreator($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvento(Evento $evento): self
+    {
+        if ($this->eventos->contains($evento)) {
+            $this->eventos->removeElement($evento);
+            // set the owning side to null (unless already changed)
+            if ($evento->getIdCreator() === $this) {
+                $evento->setIdCreator(null);
+            }
+        }
 
         return $this;
     }

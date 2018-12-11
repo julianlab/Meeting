@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Form\LoginType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class FriendsController extends Controller
@@ -17,10 +18,23 @@ class FriendsController extends Controller
         //$this->addFriend('222222222');
         $em = $this->getDoctrine()->getManager();
         $username = $this->getUser()->getId();
+        $request = Request::createFromGlobals();
         $friendAndDataList=$this->getUser()->getFriendsWithMe();
-        //$new_friend = $em->getRepository('App:User')->findOneBy(array('phone' => '444444444'));
-        //die($new_friend->getId());
-        //$this->getUser()->addMyFriend($new_friend); 
+        if($request->getMethod()=='POST'){
+            if($new_friend = $request->request->get('newFriend')){
+                $friend = $em->getRepository('App:User')->findOneBy(array('phone' => $new_friend));
+                $this->getUser()->addFriendsWithMe($friend);
+                $em->flush();
+            }
+            else if($old_friend = $request->request->get('oldFriend')){
+                $friend = $em->getRepository('App:User')->findOneBy(array('phone' => $old_friend));
+                $this->getUser()->removeFriendsWithMe($friend);
+                $em->flush();
+            }
+
+
+        }
+
         return $this->render('Friends/friends.html.twig', [
             'friends' => $friendAndDataList
         ]);

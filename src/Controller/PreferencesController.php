@@ -54,7 +54,8 @@ class PreferencesController extends Controller
         $em = $this->getDoctrine()->getManager();
         $user=$this->getUser()->getEmail();
         setlocale(LC_ALL,"es_ES");
-        $params['events']=$em->getRepository('App:Evento')->findAll(array('mailCreador'=>$user));
+        //$params['events']=$em->getRepository('App:Evento')->findAll(array('mailCreador'=>$user));
+        $params['events']=$this->getUser()->getEvents();
         return $this->render('Preferences/eventos.html.twig', $params);
     }
     /**

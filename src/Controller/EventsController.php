@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 use App\Entity\Evento;
+use App\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use App\Form\LoginType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -27,12 +28,10 @@ class EventsController extends Controller
             date_format($test, 'Y-m-d');
             $event->setNameCreador($this->getUser()->getName());
             $event->setMailCreador($this->getUser()->getEmail());
-            $event->setComunidadId($request->request->get('comunidad'));
-            $event->setProvinciaId($request->request->get('provincia'));
             $event->setMunicipioId($request->request->get('municipio'));
             $event->setFecha($test);
             $event->setDescripcion($request->request->get('descripcion'));
-            $em->persist($event);
+            $this->getUser()->addEvent($event);
             $em->flush();
         }
         $params['comunidades']=$em->getRepository('App:Comunidades')->findAll();

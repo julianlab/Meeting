@@ -29,17 +29,7 @@ class Evento
     private $mailCreador;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $comunidadId;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $provinciaId;
-
-    /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=100)
      */
     private $municipioId;
 
@@ -54,9 +44,11 @@ class Evento
     private $fecha;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="events")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="eventos")
+     * @ORM\JoinColumn(nullable=true)
      */
-    private $events;
+    private $id_creator;
+
 
     public function getId()
     {
@@ -87,36 +79,12 @@ class Evento
         return $this;
     }
 
-    public function getComunidadId(): ?int
-    {
-        return $this->comunidadId;
-    }
-
-    public function setComunidadId(int $comunidadId): self
-    {
-        $this->comunidadId = $comunidadId;
-
-        return $this;
-    }
-
-    public function getProvinciaId(): ?int
-    {
-        return $this->provinciaId;
-    }
-
-    public function setProvinciaId(int $provinciaId): self
-    {
-        $this->provinciaId = $provinciaId;
-
-        return $this;
-    }
-
-    public function getMunicipioId(): ?int
+    public function getMunicipioId(): ?string
     {
         return $this->municipioId;
     }
 
-    public function setMunicipioId(int $municipioId): self
+    public function setMunicipioId(string $municipioId): self
     {
         $this->municipioId = $municipioId;
 
@@ -147,14 +115,14 @@ class Evento
         return $this;
     }
 
-    public function getEvents(): ?User
+    public function getIdCreator(): ?User
     {
-        return $this->events;
+        return $this->id_creator;
     }
 
-    public function setEvents(?User $events): self
+    public function setIdCreator(?User $id_creator): self
     {
-        $this->events = $events;
+        $this->id_creator = $id_creator;
 
         return $this;
     }
