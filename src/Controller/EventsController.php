@@ -31,6 +31,9 @@ class EventsController extends Controller
             $event->setMunicipioId($request->request->get('municipio'));
             $event->setFecha($test);
             $event->setDescripcion($request->request->get('descripcion'));
+            $event->setIsActive(1);
+            $event->setIdCreator($this->getUser());
+
             $this->getUser()->addEvent($event);
             $em->flush();
         }

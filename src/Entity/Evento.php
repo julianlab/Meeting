@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -48,6 +50,21 @@ class Evento
      * @ORM\JoinColumn(nullable=true)
      */
     private $id_creator;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isActive;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", mappedBy="events_joined")
+     */
+    private $users_joined;
+
+    public function __construct()
+    {
+        $this->users_joined = new ArrayCollection();
+    }
 
 
     public function getId()
@@ -123,6 +140,46 @@ class Evento
     public function setIdCreator(?User $id_creator): self
     {
         $this->id_creator = $id_creator;
+
+        return $this;
+    }
+
+    public function getIsActive(): ?bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): self
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getUsersJoined(): Collection
+    {
+        return $this->users_joined;
+    }
+
+    public function addUsersJoined(User $usersJoined): self
+    {
+        if (!$this->users_joined->contains($usersJoined)) {
+            $this->users_joined[] = $usersJoined;
+            $usersJoined->addEventsJoined($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUsersJoined(User $usersJoined): self
+    {
+        if ($this->users_joined->contains($usersJoined)) {
+            $this->users_joined->removeElement($usersJoined);
+            $usersJoined->removeEventsJoined($this);
+        }
 
         return $this;
     }

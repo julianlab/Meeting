@@ -1,7 +1,14 @@
 {% extends 'Home/preferencias.html.twig' %}
 {% block preferencesFrame %}
-<div class="preferences-content">
-    <h3>Mis subscripciones</h3>
-	<p>Subscripciones hechas, pudiendo quitarlas.</p>
-</div>
+    {% set dias = ["Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado"] %}
+
+    <div class="mt-3">
+        <h3 class="h3">Mis eventos</h3>
+        <div class="row">
+            <div class="container justify-content-around d-flex flex-wrap">
+                {{ include('Preferences/_eventCards.html.twig') }}
+            </div>
+        </div>
+    </div>
+    </div>
 {% endblock %}

@@ -34,14 +34,6 @@ class User extends BaseUser
      */
     private $friendsWithMe;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Evento", inversedBy="events", cascade={"persist" })
-     * @ORM\JoinTable(name="user_events",
-     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="event_id", referencedColumnName="id", unique=true)}
-     *      )
-     */
-    private $events;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -58,12 +50,19 @@ class User extends BaseUser
      */
     private $eventos;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Evento", inversedBy="users_joined")
+     * @ORM\JoinTable(name="user_evento")
+     */
+    private $events_joined;
+
     public function __construct(){
         parent::__construct();
         $this->myFriends = new ArrayCollection();
         $this->friendsWithMe = new ArrayCollection();
         $this->events = new ArrayCollection();
         $this->eventos = new ArrayCollection();
+        $this->events_joined = new ArrayCollection();
         //my own logic xd
     }
 
@@ -135,32 +134,6 @@ class User extends BaseUser
         return $this;
     }
 
-    /**
-     * @return Collection|Evento[]
-     */
-    public function getEvents(): Collection
-    {
-        return $this->events;
-    }
-
-    public function addEvent(Evento $event): self
-    {
-        if (!$this->events->contains($event)) {
-            $this->events[] = $event;
-        }
-
-        return $this;
-    }
-
-    public function removeEvent(Evento $event): self
-    {
-        if ($this->events->contains($event)) {
-            $this->events->removeElement($event);
-        }
-
-        return $this;
-    }
-
     public function getName(): ?string
     {
         return $this->name;
@@ -211,6 +184,32 @@ class User extends BaseUser
             if ($evento->getIdCreator() === $this) {
                 $evento->setIdCreator(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Evento[]
+     */
+    public function getEventsJoined(): Collection
+    {
+        return $this->events_joined;
+    }
+
+    public function addEventsJoined(Evento $eventsJoined): self
+    {
+        if (!$this->events_joined->contains($eventsJoined)) {
+            $this->events_joined[] = $eventsJoined;
+        }
+
+        return $this;
+    }
+
+    public function removeEventsJoined(Evento $eventsJoined): self
+    {
+        if ($this->events_joined->contains($eventsJoined)) {
+            $this->events_joined->removeElement($eventsJoined);
         }
 
         return $this;

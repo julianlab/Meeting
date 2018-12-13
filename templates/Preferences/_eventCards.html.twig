@@ -4,8 +4,7 @@
             <h5 class="card-title">{{ dias[evento.fecha|date('w')] }} - {{ evento.fecha|date('d') }}</h5>
             <h6 class="card-subtitle mb-2 text-muted">{{evento.nameCreador}}</h6>
             <p class="card-text">{{ evento.descripcion }}</p>
-            <a href="#" class="btn btn-secondary">Mas info</a>
-            <a href="#" class="btn btn-secondary">Desactivar</a>
+            {{ include('Preferences/_eventCardsButtons.html.twig')}}
         </div>
     </div>
 {% endfor %}

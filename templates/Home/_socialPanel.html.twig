@@ -1,18 +1,4 @@
 <div class="col-md-3 col-sm-1 col-1 text-center social-panel">
     {% set dias = ["Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado"] %}
-    {% for evento in events %}
-            <div id="event-card" class="float-left rounded bg-info">
-                    <div class="card-body">
-                            <h5 class="card-title">{{ dias[evento.fecha|date('w')] }} - {{ evento.fecha|date('d') }}</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">{{evento.nameCreador}}</h6>
-                            <p class="card-text">{{ evento.descripcion }}</p>
-                            <form role="form" action="" method="post">
-                                <button type="submit" class="btn btn-secondary">Apuntarme</button>
-                            </form>
-                    </div>
-            </div>
-    {% endfor %}
-    {% for user in username_id %}
-        ola {{ user }}
-    {% endfor %}
+    {{ include('Preferences/_eventCards.html.twig') }}
 </div>

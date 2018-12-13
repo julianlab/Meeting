@@ -55,8 +55,11 @@ class PreferencesController extends Controller
         $user=$this->getUser()->getEmail();
         setlocale(LC_ALL,"es_ES");
         //$params['events']=$em->getRepository('App:Evento')->findAll(array('mailCreador'=>$user));
-        $params['events']=$this->getUser()->getEvents();
-        return $this->render('Preferences/eventos.html.twig', $params);
+        $events=$this->getUser()->getEvents();
+        return $this->render('Preferences/eventos.html.twig', [
+            'events' => $events,
+            'control' => created
+        ]);
     }
     /**
      * @Route("seguridad", name="seguridad")
@@ -84,7 +87,15 @@ class PreferencesController extends Controller
      */
     public function subscripciones()
     {
-        return $this->render('Preferences/subscripciones.html.twig',[]);
+        $params=array('events',array());
+        $em = $this->getDoctrine()->getManager();
+        $user=$this->getUser()->getEmail();
+        setlocale(LC_ALL,"es_ES");
+        $events=$this->getUser()->getEventsJoined();
+        return $this->render('Preferences/subscripciones.html.twig',[
+            'events' => $events,
+            'control' => 'subscribed'
+        ]);
     }
     
 }
