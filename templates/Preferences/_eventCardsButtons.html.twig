@@ -7,9 +7,6 @@
     <button type="submit" class="btn btn-secondary">Desactivar</button>
 {% endif %}
 {% if control == 'social'%}
-    <form action="{{ path('joinEvent') }}" method="post">
-        <input type="hidden" value="{{ evento.id }}" name="id">
     <button class="btn btn-secondary">Mas info</button>
-    <button type="submit" class="btn btn-secondary">Apuntar</button>
-    </form>
+    <a href="{{ path('joinEvent', {'id':evento.id}) }}" class="btn btn-secondary">Apuntar</a>
 {% endif %}

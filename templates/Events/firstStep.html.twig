@@ -1,5 +1,11 @@
 {% extends 'Home/evento.html.twig' %}
 {% block preferencesFrame %}
+    {% if filledEvents == true %}
+        <div class="container"><p>Ya has creado mas de 3 eventos el mismo dia.</p></div>
+    {% endif %}
+    {% if filledEvents == false %}
+        <div class="container"><p>Evento creado.</p></div>
+    {% endif %}
 <div class="container">
     <div>
         <form role="form" action="{{ path('events') }}" method="post">
@@ -24,24 +30,6 @@
                 <textarea class="form-control" id="descripcion" maxlength="100" name="descripcion" required>Descripcion</textarea>
                 <span>Max 100 carácteres.</span>
             </div>
-
-            {#<span>Tipo: </span>
-            {# <lect>
-                <option>Arte</option>
-                <option>Ocio</option>
-                <option>Gastronomía</option>
-                <option>Tecnología</option>
-                <option>Deporte</option>
-                <option>Política</option>
-                <option>Economía</option>
-            </select>
-            <select>
-                <option>Depende</option>
-                <option>de</option>
-                <option>la</option>
-                <option>opcion</option>
-                <option>anterior</option>
-            </select> #}
             <input type="submit" class="btn" name="submit" value="Crear evento">
         </form>
     </div>

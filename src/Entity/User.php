@@ -46,7 +46,7 @@ class User extends BaseUser
     private $surname;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Evento", mappedBy="id_creator")
+     * @ORM\OneToMany(targetEntity="App\Entity\Evento", mappedBy="id_creator", cascade={"remove"} )
      */
     private $eventos;
 
