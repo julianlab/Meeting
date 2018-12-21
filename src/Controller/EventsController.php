@@ -32,6 +32,7 @@ class EventsController extends Controller
             $event->setMunicipioId($request->request->get('municipio'));
             $event->setFecha($date);
             $event->setDescripcion($request->request->get('descripcion'));
+            $event->setSubscribers($request->request->get('subscribers'));
             $event->setIsActive(1);
             $event->setIdCreator($this->getUser());
             if (sizeof($this->quantityOfEvents($event))>2) {
@@ -56,7 +57,7 @@ class EventsController extends Controller
      **/
     public function joinEvent(Evento $event){
         if ($this->eventIsAdded($event)){
-            $addedEventLog = "Este evento ya ha sido añadido.";
+            $addedEventLog = "Ya estas apuntado en este evento.";
         }
         else if(sizeof($this->quantityOfEvents($event))>2){
             $addedEventLog = "No se puede unir al evento. Ya tiene 3 el mismo dia.";
@@ -70,6 +71,91 @@ class EventsController extends Controller
             'addedEventLog' => $addedEventLog
         ]);
     }
+    /**
+     * @param Evento $event
+     * @Route("unjoin-event/{id}", name="unjoinEvent")
+     * @ParamConverter("evento", options={"mapping": {"id": "id"}})
+     * @Template()
+     *
+     **/
+    public function unjoinEvent(Evento $event){
+        $em = $this->getDoctrine()->getManager();
+        //$addedEventLog = "No estas unido a este evento.";
+        $this->getUser()->removeEventsJoined($event);
+        $em->flush();
+        $addedEventLog = "Evento quitado de tu lista.";
+        return $this->render('Events/firstStep.html.twig', [
+            'addedEventLog' => $addedEventLog
+        ]);
+    }
+    /**
+     * @Route("/disable-event/{id}", name="disableEvent")
+     *
+     * @ParamConverter("evento", options={"mapping":{"id":"id"}})
+     * @Template()
+     */
+    public function disableEvent(Evento $event){
+        $em = $this->getDoctrine()->getManager();
+        $addedEventLog = "Event disabled.";
+        $eventToDisable = $em->getRepository('App:Evento')->findOneBy(array('id'=>$event->getId()));
+        $eventToDisable->setIsActive(0);
+        $em->flush();
+        return $this->render('Home/index.html.twig', [
+            'addedEventLog' => $addedEventLog
+        ]);
+    }
+    /**
+     * @Route("/enable-event/{id}", name="enableEvent")
+     * @ParamConverter("evento", options={"mapping":{"id":"id"}})
+     * @Template()
+     */
+    public function enableEvent(Evento $event){
+        $em = $this->getDoctrine()->getManager();
+        $addedEventLog = "Event enabled.";
+        $eventToDisable = $em->getRepository('App:Evento')->findOneBy(array('id'=>$event->getId()));
+        $eventToDisable->setIsActive(1);
+        $em->flush();
+        return $this->render('Home/index.html.twig', [
+            'addedEventLog' => $addedEventLog
+        ]);
+    }
+    /**
+     * @Route("/event/{id}", name="event")
+     * @ParamConverter("evento", options={"mapping":{"id":"id"}})
+     * @Template()
+     */
+    public function event(Evento $event){
+        $creator = 0;
+        $joined = 0;
+        $eventsJoined = $this->getUser()->getEventsJoined();
+        if($this->getUser()->getId() == $event->getIdCreator()->getId()){
+            $creator = 1;
+        }
+        foreach ($eventsJoined as $eventJoined){
+            if($eventJoined->getId() == $event->getId()){
+                $joined = 1;
+            }
+        }
+        $subscribers = sizeof($event->getUsersJoined());
+        return $this->render('Events/event.html.twig', [
+            'evento' => $event,
+            'control' => 'main',
+            'creator' => $creator,
+            'joined' => $joined,
+            'subscribers' => $subscribers
+        ]);
+    }
+
+    /**
+     * @param Evento $event
+     * @return bool
+     * @ParamConverter("evento", options={"mapping": {"id": "id"}})
+     * @Template()
+     */
+    public function userIsJoined(Evento $event){
+        $eventsJoined = $this->getUser()->getEventsJoined();
+        return 1;
+    }
 
 
 
@@ -79,11 +165,18 @@ class EventsController extends Controller
         $qb = $em->createQueryBuilder();
         $username = $this->getUser()->getId();
         $username_id = $this->getUser()->getId();
+        $eventsJoined = $this->getUser()->getEventsJoined();
+        $joined = array();
+        foreach ($eventsJoined as $evJoined){
+            array_push($joined,$evJoined->getId());
+        }
         $qb->select('events')
             ->from('App:Evento', 'events')
             ->where($qb->expr()->notIN('events.id_creator', $username))
+            ->andWhere($qb->expr()->eq('events.isActive',1))
+            ->andWhere($qb->expr()->notIN("events.id",$joined))
             ->getQuery()
-            ->getResult();
+        ->getResult();
         $query = $qb->getQuery();
         $events = $query->getResult();
         return $this->render('Home/_socialPanel.html.twig', [

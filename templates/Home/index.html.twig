@@ -1,4 +1,6 @@
 {% extends 'preferencesLayout.html.twig' %}
 {% block preferencesFrame %}
-<p>{{ addedEventLog }}</p>
+    {% if addedEventLog is defined %}
+        <p>{{ addedEventLog }}</p>
+    {% endif %}
 {% endblock %}

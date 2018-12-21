@@ -61,6 +61,11 @@ class Evento
      */
     private $users_joined;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $subscribers;
+
     public function __construct()
     {
         $this->users_joined = new ArrayCollection();
@@ -180,6 +185,18 @@ class Evento
             $this->users_joined->removeElement($usersJoined);
             $usersJoined->removeEventsJoined($this);
         }
+
+        return $this;
+    }
+
+    public function getSubscribers(): ?int
+    {
+        return $this->subscribers;
+    }
+
+    public function setSubscribers(int $subscribers): self
+    {
+        $this->subscribers = $subscribers;
 
         return $this;
     }

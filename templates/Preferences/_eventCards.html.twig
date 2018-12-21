@@ -1,5 +1,10 @@
 {% for evento in events %}
-    <div id="event-card" class="float-left rounded bg-info">
+    {% if evento.isActive == 1 %}
+        <div id="event-card" class="float-left rounded bg-info">
+    {% endif %}
+    {% if evento.isActive == 0 %}
+        <div id="event-card" class="float-left rounded bg-secondary">
+    {% endif %}
         <div class="card-body">
             <h5 class="card-title">{{ dias[evento.fecha|date('w')] }} - {{ evento.fecha|date('d') }}</h5>
             <h6 class="card-subtitle mb-2 text-muted">{{evento.nameCreador}}</h6>

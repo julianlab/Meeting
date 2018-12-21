@@ -4,11 +4,12 @@ namespace App\Controller;
 
 use App\Form\LoginType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class PreferencesController extends Controller
+class PreferencesController extends AbstractController
 {
     private $router;
 
@@ -30,7 +31,6 @@ class PreferencesController extends Controller
     public function perfil()
     {//Muestra y modifica la entidad del usuario que está logeado.
         $em = $this->getDoctrine()->getManager();
-        $params = array('user'=>array());
         $username = $this->getUser()->getUsername();
         $request = Request::createFromGlobals();
         if($request->getMethod()=='POST'){
@@ -42,8 +42,10 @@ class PreferencesController extends Controller
             $user->setPhone($request->request->get('phone'));
             $em->flush();
         }
-        $params['user']=$em->getRepository('App:User')->findOneBy(array('username' => $username));
-        return $this->render("Preferences/perfil.html.twig", $params);
+        $user=$em->getRepository('App:User')->findOneBy(array('username' => $username));
+        return $this->render("Preferences/perfil.html.twig", [
+            'user' => $user,
+        ]);
     }
     /**
      * @Route("eventos", name="eventos")
@@ -55,10 +57,10 @@ class PreferencesController extends Controller
         $user=$this->getUser()->getEmail();
         setlocale(LC_ALL,"es_ES");
         //$params['events']=$em->getRepository('App:Evento')->findAll(array('mailCreador'=>$user));
-        $events=$this->getUser()->getEvents();
+        $events=$this->getUser()->getEventos();
         return $this->render('Preferences/eventos.html.twig', [
             'events' => $events,
-            'control' => created
+            'control' => 'created'
         ]);
     }
     /**
