@@ -4,6 +4,7 @@ var mm = require('moment');
 //var dtpk = require('jquery-datetimepicker');
 var bts = require('bootstrap');
 var events = require('./Events/selectProvincias');
+var foscomment = require('./foscomment/js/comments');
 global.$ = global.jQuery = require('jquery');
 $.fn.datetimepicker = require('pc-bootstrap4-datetimepicker');
 // JS is equivalent to the normal "bootstrap" package

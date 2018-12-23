@@ -2,11 +2,14 @@
 {% set dias = ["Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado"] %}
 
 {% block preferencesFrame %}
+
 <div class="container">
+
     <h3 class="text-center text-aqua">{{ dias[evento.fecha|date('w')] }} - {{ evento.fecha|date('d') }}</h3>
     <h4 class="text-center">{{ evento.descripcion }} </h4>
     <h3 class="text-center">{{ subscribers }}/{{ evento.subscribers }}</h3>
     {{ include('Preferences/_eventCardsButtons.html.twig')}}
+    {% include '@FOSComment/Thread/async.html.twig' with {'id': 'foo'} %}
     <p>Comentarios?</p>
 </div>
 {% endblock %}
