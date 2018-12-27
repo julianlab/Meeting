@@ -14,7 +14,7 @@ class Thread extends BaseThread
      * @var string $id
      *
      * @ORM\Id
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string")
      */
     protected $id;
 }
