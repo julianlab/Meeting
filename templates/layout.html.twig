@@ -1,17 +1,12 @@
 {% extends 'base.html.twig' %}
 {% block content %}
-<main>
-	{% block background %}{% endblock %}
 	{{ include('Home/navbar.html.twig') }}
-	<div>
-		<div class="main-content">
-			<div class="container-fluid">
-				<div class="row">
-					{% block socialPanel %}{% endblock %}
-					{% block contenido %}{% endblock %}
-				</div>
+	<div class="main-content">
+		<div class="container-fluid">
+			<div class="row">
+				{% block socialPanel %}{% endblock %}
+				{% block contenido %}{% endblock %}
 			</div>
 		</div>
 	</div>
-</main>
 {% endblock %}

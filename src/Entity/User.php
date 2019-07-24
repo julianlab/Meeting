@@ -2,6 +2,11 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiProperty;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use FOS\UserBundle\Model\User as BaseUser;
@@ -9,6 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @ApiResource(iri="http://meet.in/User")
+ * @ApiFilter(PropertyFilter::class)
  */
 class User extends BaseUser
 {
@@ -25,12 +32,12 @@ class User extends BaseUser
     private $phone;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\User", mappedBy="myFriends")
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", mappedBy="friendsWithMe")
      */
     private $myFriends;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="friendsWithMe")
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="myFriends")
      */
     private $friendsWithMe;
 

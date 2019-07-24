@@ -19,14 +19,6 @@ class HomeController extends Controller
         return $this->render('Home/index.html.twig', []);
     }
     /**
-     * @Route("/", name="index")
-     */
-    public function index()
-    {
-        //$form = $this->createForm(LoginType::class);
-        return $this->render('Home/index.html.twig', []);
-    }
-    /**
      * @Route("/login", name="login")
      */
     /*public function login()

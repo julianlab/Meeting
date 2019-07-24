@@ -18,9 +18,13 @@ Encore
     .enableSassLoader(function(sassOptions) {}, {
          resolveUrlLoader: false
     })
-    .autoProvidejQuery()
+    //.autoProvidejQuery()
     // uncomment for legacy applications that require $/jQuery as a global variable
     // .autoProvidejQuery()
+
+    //Enabling Vue.js
+    .enableVueLoader()
+
 ;
 
 module.exports = Encore.getWebpackConfig();

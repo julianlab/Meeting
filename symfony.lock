@@ -1,4 +1,16 @@
 {
+    "api-platform/api-pack": {
+        "version": "1.1.0"
+    },
+    "api-platform/core": {
+        "version": "2.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "2.1",
+            "ref": "18727d8f229306860b46955f438e1897421da689"
+        }
+    },
     "cocur/slugify": {
         "version": "v3.1"
     },
@@ -110,6 +122,15 @@
     "monolog/monolog": {
         "version": "1.23.0"
     },
+    "nelmio/cors-bundle": {
+        "version": "1.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.5",
+            "ref": "f0436fc35fca88eada758311f8de43bfb61f1980"
+        }
+    },
     "nikic/php-parser": {
         "version": "v4.0.1"
     },
@@ -124,6 +145,15 @@
     },
     "phpcollection/phpcollection": {
         "version": "0.5.0"
+    },
+    "phpdocumentor/reflection-common": {
+        "version": "1.0.1"
+    },
+    "phpdocumentor/reflection-docblock": {
+        "version": "4.3.0"
+    },
+    "phpdocumentor/type-resolver": {
+        "version": "0.4.0"
     },
     "phpoption/phpoption": {
         "version": "1.5.0"
@@ -275,9 +305,6 @@
     "symfony/intl": {
         "version": "v3.4.6"
     },
-    "symfony/lts": {
-        "version": "v3"
-    },
     "symfony/maker-bundle": {
         "version": "1.0",
         "recipe": {
@@ -308,6 +335,9 @@
     "symfony/polyfill-apcu": {
         "version": "v1.7.0"
     },
+    "symfony/polyfill-ctype": {
+        "version": "v1.10.0"
+    },
     "symfony/polyfill-intl-icu": {
         "version": "v1.7.0"
     },
@@ -331,6 +361,9 @@
     },
     "symfony/property-access": {
         "version": "v3.4.6"
+    },
+    "symfony/property-info": {
+        "version": "v4.1.10"
     },
     "symfony/routing": {
         "version": "3.3",
@@ -358,6 +391,9 @@
     },
     "symfony/serializer": {
         "version": "v3.4.8"
+    },
+    "symfony/serializer-pack": {
+        "version": "v1.0.2"
     },
     "symfony/stopwatch": {
         "version": "v3.4.6"
@@ -442,6 +478,9 @@
     },
     "twig/twig": {
         "version": "v2.4.7"
+    },
+    "webmozart/assert": {
+        "version": "1.4.0"
     },
     "willdurand/jsonp-callback-validator": {
         "version": "v1.1.0"

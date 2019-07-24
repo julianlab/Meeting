@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints\DateTime;
 
 class EventsController extends Controller
@@ -26,7 +27,7 @@ class EventsController extends Controller
         if($request->getMethod()=='POST') {
             $event = new Evento();
             $date = new \DateTime($request->request->get('fecha'));
-            date_format($date, 'Y-m-d');
+            print_r($request->request->get('fecha'));
             $event->setNameCreador($this->getUser()->getName());
             $event->setMailCreador($this->getUser()->getEmail());
             $event->setMunicipioId($request->request->get('municipio'));
@@ -35,6 +36,7 @@ class EventsController extends Controller
             $event->setSubscribers($request->request->get('subscribers'));
             $event->setIsActive(1);
             $event->setIdCreator($this->getUser());
+            $event->setIsExpired(0);
             if (sizeof($this->quantityOfEvents($event))>2) {
                 $filledEvents = true;
             }
@@ -51,6 +53,35 @@ class EventsController extends Controller
         ]);
     }
     /**
+     * @Route("/event/{id}", name="event")
+     * @ParamConverter("evento", options={"mapping":{"id":"id"}})
+     * @Template()
+     */
+    public function event(Evento $event){
+        $creator = 0;
+        $joined = 0;
+        $this->lookEventExpire();
+        $eventsJoined = $this->getUser()->getEventsJoined();
+        if($this->getUser()->getId() == $event->getIdCreator()->getId()){
+            $creator = 1;
+        }
+        foreach ($eventsJoined as $eventJoined){
+            if($eventJoined->getId() == $event->getId()){
+                $joined = 1;
+            }
+        }
+        $subscribers = sizeof($event->getUsersJoined());
+        return $this->render('Events/event.html.twig', [
+            'evento' => $event,
+            'control' => 'main',
+            'creator' => $creator,
+            'joined' => $joined,
+            'subscribers' => $subscribers
+        ]);
+    }
+
+
+    /**
      * @Route("/join-event/{id}", name="joinEvent")
      * @ParamConverter("evento", options={"mapping": {"id": "id"}})
      * @Template()
@@ -61,7 +92,8 @@ class EventsController extends Controller
         }
         else if(sizeof($this->quantityOfEvents($event))>2){
             $addedEventLog = "No se puede unir al evento. Ya tiene 3 el mismo dia.";
-        }else{
+        }
+        else{
             $em = $this->getDoctrine()->getManager();
             $this->getUser()->addEventsJoined($event);
             $em->flush();
@@ -119,32 +151,7 @@ class EventsController extends Controller
             'addedEventLog' => $addedEventLog
         ]);
     }
-    /**
-     * @Route("/event/{id}", name="event")
-     * @ParamConverter("evento", options={"mapping":{"id":"id"}})
-     * @Template()
-     */
-    public function event(Evento $event){
-        $creator = 0;
-        $joined = 0;
-        $eventsJoined = $this->getUser()->getEventsJoined();
-        if($this->getUser()->getId() == $event->getIdCreator()->getId()){
-            $creator = 1;
-        }
-        foreach ($eventsJoined as $eventJoined){
-            if($eventJoined->getId() == $event->getId()){
-                $joined = 1;
-            }
-        }
-        $subscribers = sizeof($event->getUsersJoined());
-        return $this->render('Events/event.html.twig', [
-            'evento' => $event,
-            'control' => 'main',
-            'creator' => $creator,
-            'joined' => $joined,
-            'subscribers' => $subscribers
-        ]);
-    }
+
 
     /**
      * @param Evento $event
@@ -167,18 +174,24 @@ class EventsController extends Controller
         $username_id = $this->getUser()->getId();
         $eventsJoined = $this->getUser()->getEventsJoined();
         $joined = array();
-        foreach ($eventsJoined as $evJoined){
-            array_push($joined,$evJoined->getId());
+        foreach ($eventsJoined as $evJoined) {
+            array_push($joined, $evJoined->getId());
+        }
+        if(empty($joined)) {
+            $joined = 0;
         }
         $qb->select('events')
             ->from('App:Evento', 'events')
             ->where($qb->expr()->notIN('events.id_creator', $username))
-            ->andWhere($qb->expr()->eq('events.isActive',1))
-            ->andWhere($qb->expr()->notIN("events.id",$joined))
+            ->andWhere($qb->expr()->eq('events.isActive', 1))
+            ->andWhere($qb->expr()->notIN("events.id", $joined))
+            ->andWhere("events.fecha >= :date")
+            ->setParameter('date', date('Y/m/d', time()))
             ->getQuery()
-        ->getResult();
+            ->getResult();
         $query = $qb->getQuery();
         $events = $query->getResult();
+
         return $this->render('Home/_socialPanel.html.twig', [
                 'events' => $events,
                 'username_id' => $username_id,
@@ -187,7 +200,43 @@ class EventsController extends Controller
         );
     }
 
+    public function socialPanelAux()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $qb = $em->createQueryBuilder();
+        $username = $this->getUser()->getId();
+        $username_id = $this->getUser()->getId();
+        $eventsJoined = $this->getUser()->getEventsJoined();
+        $joined = array();
+        foreach ($eventsJoined as $evJoined){
+            array_push($joined,$evJoined->getId());
+        }
+        $qb->select('events')
+            ->from('App:Evento', 'events')
+            ->where($qb->expr()->notIN('events.id_creator', $username))
+            ->andWhere($qb->expr()->eq('events.isActive',1))
+            ->andWhere($qb->expr()->notIN("events.id",$joined))
+            ->andWhere("events.fecha >= :date")
+            ->setParameter('date',date('Y/m/d', time()))
+            ->getQuery()
+            ->getResult();
+        $query = $qb->getQuery();
+        $events = $query->getResult();
 
+        $result = [];
+        foreach ($events as $event){
+            array_push($result, [
+                'id' => $event->getId(),
+                'date' => $event->getFecha(),
+                'description' => $event->getDescripcion()
+            ]);
+        }
+
+        $response = new Response(json_encode($result));
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
     public function eventIsAdded(Evento $event):bool {
         $eventsJoined = $this->getUser()->getEventsJoined();
         return($eventsJoined->contains($event));
@@ -202,6 +251,9 @@ class EventsController extends Controller
         foreach ($eventsJoined as $evJoined){
             array_push($joined,$evJoined->getId());
         }
+        if(empty($joined)){
+            $joined = 0;
+        }
         $qb->select('events')
             ->from('App:Evento', 'events')
             ->where($qb->expr()->in('events.id', $joined))
@@ -214,5 +266,10 @@ class EventsController extends Controller
 
         return $events;
     }
+
+    public function lookEventExpire(){
+        $em = $this->getDoctrine()->getManager();
+        
+        return 0;
+    }
 }
-?>

@@ -1,43 +1,43 @@
 <!-- PreferencesController -->
 {% if control == 'subscribed' %}
-    <a href="{{ path('event', {'id':evento.id}) }}" class="btn btn-secondary">Mas info</a>
-    <a href="{{ path('unjoinEvent', {'id':evento.id}) }}" class="btn btn-secondary">Unjoin</a>
+    <a href="{{ path('event', {'id':evento.id}) }}" class="btn btn-success">More info</a>
+    <a href="{{ path('unjoinEvent', {'id':evento.id}) }}" class="btn btn-success">Unjoin</a>
 {% endif %}
 <!-- PreferencesController -->
 {% if control == 'created' %}
-    <a href="{{ path('event', {'id':evento.id}) }}" class="btn btn-secondary">Mas info</a>
+    <a href="{{ path('event', {'id':evento.id}) }}" class="btn btn-success">More info</a>
     {% if evento.isActive == 1 %}
-        <a href="{{ path('disableEvent', {'id':evento.id}) }}" class="btn btn-secondary">Disable</a>
+        <a href="{{ path('disableEvent', {'id':evento.id}) }}" class="btn btn-success">Disable</a>
     {% endif %}
     {% if evento.isActive == 0 %}
-        <a href="{{ path('enableEvent', {'id':evento.id}) }}" class="btn btn-secondary">Enable</a>
+        <a href="{{ path('enableEvent', {'id':evento.id}) }}" class="btn btn-success">Enable</a>
     {% endif %}{% endif %}
 <!-- EventsController -->
 {% if control == 'social'%}
-    <a href="{{ path('event', {'id':evento.id}) }}" class="btn btn-secondary">Mas info</a>
-    <a href="{{ path('joinEvent', {'id':evento.id}) }}" class="btn btn-secondary">Join</a>
+    <a href="{{ path('event', {'id':evento.id}) }}" class="btn btn-success">More info</a>
+    <a href="{{ path('joinEvent', {'id':evento.id}) }}" class="btn btn-success">Join</a>
 {% endif %}
 <!-- EventsController -->
 {% if control == 'main' %}
     <div class="row align-items-center justify-content-center">
     {% if evento.isActive == 1 and creator == 1 %}
-        <a href="{{ path('disableEvent', {'id':evento.id}) }}" class="btn btn-secondary">Disable</a>
+        <a href="{{ path('disableEvent', {'id':evento.id}) }}" class="btn btn-success">Disable</a>
     {% endif %}
     {% if evento.isActive == 0 and creator == 1%}
-        <a href="{{ path('enableEvent', {'id':evento.id}) }}" class="btn btn-secondary">Enable</a>
+        <a href="{{ path('enableEvent', {'id':evento.id}) }}" class="btn btn-success">Enable</a>
     {% endif %}
     {% if joined == 1 %}
         {% if evento.isActive == 1 %}
-            <a href="{{ path('unjoinEvent', {'id':evento.id}) }}" class="btn btn-secondary">Unjoin</a>
+            <a href="{{ path('unjoinEvent', {'id':evento.id}) }}" class="btn btn-success">Unjoin</a>
             {% else %}
-            <a href="{{ path('unjoinEvent', {'id':evento.id}) }}" class="btn btn-secondary">Unjoin</a>
+            <a href="{{ path('unjoinEvent', {'id':evento.id}) }}" class="btn btn-secondary disabled">Unjoin</a>
         {% endif %}
     {% endif %}
     {% if joined == 0 %}
         {% if evento.isActive == 1 %}
-            <a href="{{ path('joinEvent', {'id':evento.id}) }}" class="btn btn-secondary">Join</a>
+            <a href="{{ path('joinEvent', {'id':evento.id}) }}" class="btn btn-success">Join</a>
             {% else %}
-            <a href="{{ path('unjoinEvent', {'id':evento.id}) }}" class="btn btn-secondary">Join</a>
+            <a href="{{ path('unjoinEvent', {'id':evento.id}) }}" class="btn btn-secondary disabled">Join</a>
         {% endif %}
     {% endif %}
     </div>

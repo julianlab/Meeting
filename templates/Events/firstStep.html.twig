@@ -14,11 +14,11 @@
             </div>
             <div class="form-group">
                 <span for="fecha" class="h4">Fecha: </span>
-                <div class='input-group date' id='datetimepicker'>
-                    <input type='text' class="form-control" name="fecha"/>
-                    <span class="input-group-addon">
-                        <i class="fa fa-calendar fa-2x"></i>
-                    </span>
+                <div class="input-group date" id="datetimepicker" data-target-input="nearest">
+                    <input type="text" name="fecha" class="form-control datetimepicker-input" data-target="#datetimepicker" />
+                    <div class="input-group-append" data-target="#datetimepicker" data-toggle="datetimepicker">
+                        <div class="input-group-text" ><i class="fa fa-calendar"></i></div>
+                    </div>
                 </div>
             </div>
             <div class="form-group">
@@ -35,16 +35,17 @@
     </div>
 </div>
 {% endblock %}
-{% block javascripts %}
+{% block javascript %}
+    {{ parent() }}
+
 	<script>
-        window.onload = function(){
-            //document.getElementById('provincia_select').addEventListener('change', provincia_change);
-            //document.getElementById('comunidad_select').addEventListener('change', comunidad_change);
-            //comunidad_change();
-            $(function () {
-                $('#datetimepicker').datetimepicker({format: 'L'});
+        $(document).ready(function() {
+                $('#datetimepicker').datetimepicker({
+                    format: 'L',
+                    format: 'DD-MM-YYYY'
+                });
             });
-        }
+
         /*
          ·Llaman con ajax a un php y pasan por parametros la comunidad.
          ·Reciben un json con las provincias.
@@ -54,7 +55,7 @@
             $.ajax({
                 method: "POST",
                 data: comunidad,
-                url: "{{ path('ajax_provincias') }}",
+                url: "",
                 dataType: 'json',
                 success: function(data){
                     var provincias = JSON.parse(data.provincias);
@@ -67,7 +68,7 @@
             $.ajax({
                 method: "POST",
                 data: provincia,
-                url: "{{ path('ajax_municipios') }}",
+                url: ,
                 dataType: 'json',
                 success: function(data){
                     var municipios = JSON.parse(data.municipios);

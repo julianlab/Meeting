@@ -24,4 +24,5 @@ return [
     FOS\RestBundle\FOSRestBundle::class => ['all' => true],
     JMS\SerializerBundle\JMSSerializerBundle::class => ['all' => true],
     Symfony\Bundle\AsseticBundle\AsseticBundle::class => ['all' => true],
+    ApiPlatform\Core\Bridge\Symfony\Bundle\ApiPlatformBundle::class => ['all' => true],
 ];

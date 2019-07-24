@@ -52,12 +52,42 @@ class PreferencesController extends AbstractController
      */
     public function eventos()
     {
-        $params=array('events',array());
         $em = $this->getDoctrine()->getManager();
-        $user=$this->getUser()->getEmail();
-        setlocale(LC_ALL,"es_ES");
-        //$params['events']=$em->getRepository('App:Evento')->findAll(array('mailCreador'=>$user));
-        $events=$this->getUser()->getEventos();
+        $qb = $em->createQueryBuilder();
+        $qb->select('events')
+            ->from('App:Evento', 'events')
+            ->where($qb->expr()->in('events.id_creator', $this->getUser()->getId()))
+            ->andWhere("events.fecha >= :date")
+            ->setParameter('date',date('Y/m/d', time()))
+            ->getQuery()
+            ->getResult();
+        $query = $qb->getQuery();
+        $events = $query->getResult();
+        return $this->render('Preferences/eventos.html.twig', [
+            'events' => $events,
+            'control' => 'created'
+        ]);
+    }
+
+    /**
+     * @Route("/events/expired", name="expiredEvents")
+     */
+    public function expiredEvents(){
+        $em = $this->getDoctrine()->getManager();
+        $qb = $em->createQueryBuilder();
+        $qb->select('events')
+            ->from('App:Evento', 'events')
+            ->where($qb->expr()->in('events.id_creator', $this->getUser()->getId()))
+            ->andWhere("events.fecha <= :date")
+            ->setParameter('date',date('Y/m/d', time()))
+            ->getQuery()
+            ->getResult();
+        $query = $qb->getQuery();
+        $events = $query->getResult();
+        foreach ($events as $event) {
+            $event->setIsExpired(1);
+        }
+        $em->flush();
         return $this->render('Preferences/eventos.html.twig', [
             'events' => $events,
             'control' => 'created'
@@ -89,16 +119,59 @@ class PreferencesController extends AbstractController
      */
     public function subscripciones()
     {
-        $params=array('events',array());
         $em = $this->getDoctrine()->getManager();
-        $user=$this->getUser()->getEmail();
-        setlocale(LC_ALL,"es_ES");
-        $events=$this->getUser()->getEventsJoined();
-        return $this->render('Preferences/subscripciones.html.twig',[
+        $eventsJoined = $this->getUser()->getEventsJoined();
+        $joined = array();
+        foreach ($eventsJoined as $evJoined) {
+            array_push($joined, $evJoined->getId());
+        }
+        if(empty($joined)) {
+            $joined = 0;
+        }
+        $qb = $em->createQueryBuilder();
+        $qb->select('events')
+            ->from('App:Evento', 'events')
+            ->where($qb->expr()->in('events.id', $joined))
+            ->andWhere("events.fecha >= :date")
+            ->setParameter('date', date('Y/m/d', time()))
+            ->getQuery()
+            ->getResult();
+        $query = $qb->getQuery();
+        $events = $query->getResult();
+
+        return $this->render('Preferences/eventos.html.twig',[
             'events' => $events,
             'control' => 'subscribed'
         ]);
     }
-    
+    /**
+     * @Route("/subscripciones/expired", name="expiredSubscribedEvents")
+     */
+    public function expiredSubscribedEvents(){
+        $em = $this->getDoctrine()->getManager();
+        $eventsJoined = $this->getUser()->getEventsJoined();
+        $joined = array();
+        foreach ($eventsJoined as $evJoined){
+            array_push($joined,$evJoined->getId());
+        }
+        $qb = $em->createQueryBuilder();
+        $qb->select('events')
+            ->from('App:Evento', 'events')
+            ->where($qb->expr()->in('events.id', $joined))
+            ->andWhere("events.fecha <= :date")
+            ->setParameter('date',date('Y/m/d', time()))
+            ->getQuery()
+            ->getResult();
+        $query = $qb->getQuery();
+        $events = $query->getResult();
+        foreach ($events as $event) {
+            $event->setIsExpired(1);
+        }
+        $em->flush();
+        return $this->render('Preferences/eventos.html.twig', [
+            'events' => $events,
+            'control' => 'subscribed'
+        ]);
+    }
 }
 ?>

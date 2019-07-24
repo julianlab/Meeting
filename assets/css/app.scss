@@ -10,7 +10,10 @@ $icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
 //@import '~bootstrap-sass/assets/stylesheets/bootstrap';
 @import '~bootstrap/scss/bootstrap.scss';
 //Bootstrap-datetimepicker
-@import "~pc-bootstrap4-datetimepicker/src/sass/bootstrap-datetimepicker-build.scss";
+//@import "~pc-bootstrap4-datetimepicker/src/sass/bootstrap-datetimepicker-build";
+//@import "~tempusdominus-bootstrap-4/src/sass/tempusdominus-bootstrap-4-build";
+//@import "~eonasdan-bootstrap-datetimepicker-bootstrap4beta/src/sass/bootstrap-datetimepicker-build";
+//@import "~bootstrap-sass/assets/stylesheets/bootstrap";
 
 // Styles
 @import 'static/_frame';

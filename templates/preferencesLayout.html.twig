@@ -1,8 +1,8 @@
 {% extends 'layout.html.twig' %}
-{% block background %}{% endblock %}
 {% block socialPanel %}{{ render(controller('App\\Controller\\EventsController::socialPanel'))}}{% endblock %}
 {% block contenido %}
 	<div class="col-md-9 col-sm-11 col-11 float-right">
+
         {% block preferencesNav %}{% endblock %}
         {% block preferencesFrame %}{% endblock %}
 	</div>
