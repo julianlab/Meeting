@@ -2,10 +2,7 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiProperty;
-use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
+use FOS\UserBundle\Model\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -14,8 +11,6 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
- * @ApiResource(iri="http://meet.in/User")
- * @ApiFilter(PropertyFilter::class)
  */
 class User extends BaseUser
 {

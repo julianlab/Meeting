@@ -12,6 +12,7 @@ class HomeController extends Controller
 {
     /**
      * @Route("/", name="home")
+     *
      */
     public function home()
     {

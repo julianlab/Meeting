@@ -1,18 +1,45 @@
 {% extends 'Home/evento.html.twig' %}
+{% block stylesheets %}
+    <style>
+        .tagCheckbox{
+            display:none;
+        }
+        #tagsArea span{
+            margin: 6px;
+        }
+        .tag-button{
+            display: inline-flex;
+            color: #0098ab;
+            border: 1px solid #0098ab;
+            align-items: center;
+            justify-content: center;
+            border-radius: 20px;
+            transition: background .15s;
+            cursor: pointer;
+            box-sizing: border-box;
+            padding: 8px 32px;
+            font-size: 14px;
+            line-height: 1.43;
+        }
+        .tag-checked{
+            background-color: #0098ab;
+            color: #fff;
+        }
+    </style>
+
+{% endblock %}
 {% block preferencesFrame %}
     {% if filledEvents is defined and filledEvents == true %}
         <div class="container"><p>Ya has creado mas de 3 eventos el mismo dia.</p></div>
     {% endif %}
 <div class="container">
-    <div>
-        <form role="form" action="{{ path('events') }}" method="post">
-            <div class="row">
-                <div class="form-group col-3">
-                    <span for="municipio" class="h4">Municipio: </span>
-                    <input class="form-control" name="municipio" id="municipio" required/>
-                </div>
+    <form role="form" action="{{ path('events') }}" method="post">
+        <div class="row">
+            <div class="form-group col-3">
+                <span for="municipio" class="h4">Municipio: </span>
+                <input class="form-control" name="municipio" id="municipio" required/>
             </div>
-            <div class="form-group">
+            <div class="form-group col-4">
                 <span for="fecha" class="h4">Fecha: </span>
                 <div class="input-group date" id="datetimepicker" data-target-input="nearest">
                     <input type="text" name="fecha" class="form-control datetimepicker-input" data-target="#datetimepicker" />
@@ -21,84 +48,94 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <span for="subscribers" class="h4">Aforo máximo: </span><h6>(Min 10)</h6>
+            <div class="form-group col-5">
+                <span for="subscribers" class="h4">Aforo máximo: </span>
                 <input type='number' class="form-control" name="subscribers" min="10"/>
             </div>
-            <div class="form-group">
-                <span for="descripcion">Descripcion: </span>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-12">
+                <span for="descripcion" class="h4">Descripcion: </span>
                 <textarea class="form-control" id="descripcion" maxlength="100" name="descripcion" required>Descripcion</textarea>
                 <span>Max 100 carácteres.</span>
             </div>
-            <input type="submit" class="btn" name="submit" value="Crear evento">
-        </form>
-    </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-6">
+                <span for="tag" class="h4">Busca tus tags:</span>
+                <input class="form-control" name="tag" id="tag"/><input type="button" name="Buscar" value="Buscar" class="btn" id="searchTags" />
+            </div>
+        </div>
+
+        <div class="row" id="tagsArea">
+            <ul id="tagsList">
+
+            </ul>
+        </div>
+        <input type="submit" class="btn" name="submit" value="Crear evento">
+    </form>
 </div>
 {% endblock %}
 {% block javascript %}
     {{ parent() }}
+<script src="{{ asset('js/Events/datetimepicker.js') }}"></script>
+<script src="{{ asset('js/Events/tags.js') }}"></script>
+<script>
+    var x = 0;
+    document.getElementById('searchTags').onclick = function(){
+        var tagName = document.getElementById('tag').value;
+        var url = '{{ path('tags', { 'nameLike': 'tagName' })}}';
+        url = url.replace("tagName", tagName);
 
-	<script>
-        $(document).ready(function() {
-                $('#datetimepicker').datetimepicker({
-                    format: 'L',
-                    format: 'DD-MM-YYYY'
-                });
+        $.ajax({
+        method: "GET",
+        url: url,
+        dataType: 'json',
+        success: function(data){
+            var tags = JSON.parse(data);
+            var checkedTags = [];
+            $("input:checkbox:not(:checked)").parent().remove();
+            $.map($("input:checkbox:checked"), function(checkbox){
+                checkedTags.push($(checkbox).attr("name"))
             });
-
-        /*
-         ·Llaman con ajax a un php y pasan por parametros la comunidad.
-         ·Reciben un json con las provincias.
-         */
-        /*function comunidad_change(){
-            var comunidad = document.getElementById('comunidad_select').value;
-            $.ajax({
-                method: "POST",
-                data: comunidad,
-                url: "",
-                dataType: 'json',
-                success: function(data){
-                    var provincias = JSON.parse(data.provincias);
-                    putProvincias(provincias);
+            tags.forEach(function(tag){
+                console.log(tag);
+                if($.inArray(tag.name, checkedTags) != -1){}
+                else{
+                    var tagButton = document.createElement("label");
+                    var tagCheckbox = document.createElement("input");
+                    tagButton.appendChild(tagCheckbox);
+                    tagButton.appendChild(document.createTextNode(tag.name));
+                    tagButton.className+="tag-button";
+                    tagButton.setAttribute("id", "checkboxLabel"+x);
+                    tagButton.setAttribute("onclick", "changeColor("+x+")");
+                    tagCheckbox.setAttribute("type", "checkbox");
+                    tagCheckbox.setAttribute("value", tag.id);
+                    tagCheckbox.setAttribute("class", "tagCheckbox");
+                    tagCheckbox.setAttribute("name", 'checkboxes[]');
+                    tagCheckbox.setAttribute("id", "checkboxId"+x);
+                    document.getElementById('tagsList').appendChild(tagButton);
+                    x++;
                 }
             });
         }
-        function provincia_change(){
-            var provincia = document.getElementById('provincia_select').value;
-            $.ajax({
-                method: "POST",
-                data: provincia,
-                url: ,
-                dataType: 'json',
-                success: function(data){
-                    var municipios = JSON.parse(data.municipios);
-                    putMunicipios(municipios);
-                }
-            });
+    });
+    };
+    function changeColor(id){
+        this.event.preventDefault();
+        var checkbox = document.getElementById("checkboxId"+id);
+        var tag = document.getElementById("checkboxLabel"+id);
+        if(!checkbox.checked){
+            tag.classList.add("tag-checked");
+            checkbox.checked = true;
         }
-        /*
-         ·Insertan las provincias en el siguiente select
-         */
-        /*function putProvincias(provincias){
-            $('#provincia_select').find('option').remove();
-            $.each(provincias, function (i, item) {
-                $('#provincia_select').append($('<option>', {
-                    value: item.id,
-                    text : item.provincia
-                }));
-            });
-            provincia_change();
-
+        else{
+            tag.classList.remove("tag-checked");
+            checkbox.checked = false;
         }
-        function putMunicipios(municipios){
-            $('#municipio_select').find('option').remove();
-            $.each(municipios, function (i, item) {
-                $('#municipio_select').append($('<option>', {
-                    value: item.id,
-                    text : item.municipio
-                }));
-            });
-        }*/
 
-	</script>
+    }
+</script>
 {% endblock %}

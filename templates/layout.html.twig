@@ -1,4 +1,7 @@
 {% extends 'base.html.twig' %}
+{% block stylesheets %}
+
+{% endblock %}
 {% block content %}
 	{{ include('Home/navbar.html.twig') }}
 	<div class="main-content">
@@ -9,4 +12,8 @@
 			</div>
 		</div>
 	</div>
+{% endblock %}
+{% block javascript %}
+	{{ parent() }}
+	<script src="{{ asset('js/Navar/responsive.js') }}"></script>
 {% endblock %}

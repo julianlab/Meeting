@@ -2,11 +2,6 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiProperty;
-use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -15,11 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\EventoRepository")
- * @ApiResource(attributes={
- *     "normalization_context"={"groups"={"read"}},
- *     "denormalization_context"={"groups"={"write"}}
- * })
- * @ApiFilter(DateFilter::class)
  */
 
 
@@ -30,38 +20,31 @@ class Evento
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"read", "write"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string")
-     * @ApiProperty(iri="http://meet.in/nameCreador/")
-     * @Groups({"read", "write"})
      */
     private $nameCreador;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read", "write"})
      */
     private $mailCreador;
 
     /**
      * @ORM\Column(type="string", length=100)
-     * @Groups({"read", "write"})
      */
     private $municipioId;
 
     /**
      * @ORM\Column(type="string", length=100)
-     * @Groups({"read", "write"})
      */
     private $descripcion;
 
     /**
      * @ORM\Column(type="date")
-     * @Groups({"read", "write"})
      */
     private $fecha;
 
@@ -74,32 +57,34 @@ class Evento
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"read", "write"})
      */
     private $isActive;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\User", mappedBy="events_joined")
-     * @Groups({"none"})
      *
      */
     private $users_joined;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"read", "write"})
      */
     private $subscribers;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"read", "write"})
      */
     private $isExpired;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Tag")
+     */
+    private $tags;
 
     public function __construct()
     {
         $this->users_joined = new ArrayCollection();
+        $this->tags = new ArrayCollection();
     }
 
 
@@ -240,6 +225,32 @@ class Evento
     public function setIsExpired(bool $isExpired): self
     {
         $this->isExpired = $isExpired;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Tag[]
+     */
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+    public function addTag(Tag $tag): self
+    {
+        if (!$this->tags->contains($tag)) {
+            $this->tags[] = $tag;
+        }
+
+        return $this;
+    }
+
+    public function removeTag(Tag $tag): self
+    {
+        if ($this->tags->contains($tag)) {
+            $this->tags->removeElement($tag);
+        }
 
         return $this;
     }

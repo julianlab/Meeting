@@ -2,15 +2,13 @@
 {% block content %}
 <main>
 	{% block background %}<div class="container-bg"></div>{% endblock %}
-	
+
    	<div>
    	    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
    	        {{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }} |
    	        <a href="{{ path('fos_user_security_logout') }}">
    	            {{ 'layout.logout'|trans({}, 'FOSUserBundle') }}
    	        </a>
-   	    {% else %}
-   	        <a href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
    	    {% endif %}
    	</div>
    	{% if app.request.hasPreviousSession %}

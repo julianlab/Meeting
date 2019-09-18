@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 use App\Entity\Evento;
+use App\Entity\Tag;
 use App\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use App\Form\LoginType;
@@ -24,16 +25,33 @@ class EventsController extends Controller
         $em=$this->getDoctrine()->getManager();
         $request = Request::createFromGlobals();
         $filledEvents = false;
+        $qb = $em->createQueryBuilder();
+        $qb->select('tags')
+            ->from('App:Tag', 'tags')
+            ->getQuery()
+            ->getResult();
+        $query = $qb->getQuery();
+        $tags = $query->getResult();
         if($request->getMethod()=='POST') {
             $event = new Evento();
             $date = new \DateTime($request->request->get('fecha'));
-            print_r($request->request->get('fecha'));
             $event->setNameCreador($this->getUser()->getName());
             $event->setMailCreador($this->getUser()->getEmail());
             $event->setMunicipioId($request->request->get('municipio'));
             $event->setFecha($date);
             $event->setDescripcion($request->request->get('descripcion'));
             $event->setSubscribers($request->request->get('subscribers'));
+            foreach($request->request->get('checkboxes') as $tag){
+                $qb = $em->createQueryBuilder();
+                $qb->select('tags')
+                    ->from('App:Tag', 'tags')
+                    ->where($qb->expr()->eq('tags.id', $tag))
+                    ->getQuery()
+                    ->getResult();
+                $query = $qb->getQuery();
+                $tag = $query->getResult();
+                $event->addTag($tag[0]);
+            }
             $event->setIsActive(1);
             $event->setIdCreator($this->getUser());
             $event->setIsExpired(0);
@@ -49,7 +67,8 @@ class EventsController extends Controller
             }
         }
         return $this->render('Events/firstStep.html.twig',[
-            'filledEvents'=>$filledEvents
+            'filledEvents'=>$filledEvents,
+            'tags'=>$tags
         ]);
     }
     /**

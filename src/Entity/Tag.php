@@ -2,11 +2,13 @@
 
 namespace App\Entity;
 
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TagRepository")
- */
+ *
+ **/
 class Tag
 {
     /**
@@ -25,7 +27,6 @@ class Tag
     {
         return $this->id;
     }
-
     public function getName(): ?string
     {
         return $this->name;
