@@ -1,0 +1,41 @@
+.responsiveNavbar{
+    display:none;
+}
+.responsiveNavbar .responsiveLink{
+    display:block;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.navbar .icon {
+    display:none;
+}
+@media screen and (max-width: 600px) {
+    .navbar a {display: none;}
+    .navbar a.icon {
+        float: right;
+        display: block;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .navbar .responsive {position: relative;}
+    .navbar .responsive .icon {
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+    .navbar .responsive a {
+        float: none;
+        display: block;
+        text-align: left;
+    }
+}
+
+@media screen and (max-width: 600px){
+    .navbar{
+        padding: 1rem 1rem;
+    }
+    .social-panel{
+        display: none;
+    }
+}

@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% block stylesheets %}
-
+	<link rel="stylesheet" type="text/css" href="{{ asset('css/Navbar/responsive.css') }}">
 {% endblock %}
 {% block content %}
 	{{ include('Home/navbar.html.twig') }}
@@ -15,5 +15,5 @@
 {% endblock %}
 {% block javascript %}
 	{{ parent() }}
-	<script src="{{ asset('js/Navar/responsive.js') }}"></script>
+	<script src="{{ asset('js/Navbar/responsive.js') }}"></script>
 {% endblock %}

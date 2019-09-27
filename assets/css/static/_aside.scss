@@ -1,13 +1,9 @@
-@media (max-width: 990px) {
+@media (max-width: 767px) {
   .social-panel{
-    background-color: rgb(220,220,220);
-    left: 0;
-    width: 50px !important;
-    min-height: 92vh;
-    content: 'tablet';
+    display: none;
   }
 }
-@media (min-width: 990px) {
+@media (min-width: 767px) {
   .social-panel{
     background-color: rgb(220,220,220);
     left: 0;

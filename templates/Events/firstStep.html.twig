@@ -1,32 +1,7 @@
 {% extends 'Home/evento.html.twig' %}
 {% block stylesheets %}
-    <style>
-        .tagCheckbox{
-            display:none;
-        }
-        #tagsArea span{
-            margin: 6px;
-        }
-        .tag-button{
-            display: inline-flex;
-            color: #0098ab;
-            border: 1px solid #0098ab;
-            align-items: center;
-            justify-content: center;
-            border-radius: 20px;
-            transition: background .15s;
-            cursor: pointer;
-            box-sizing: border-box;
-            padding: 8px 32px;
-            font-size: 14px;
-            line-height: 1.43;
-        }
-        .tag-checked{
-            background-color: #0098ab;
-            color: #fff;
-        }
-    </style>
-
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/Event/tag.css') }}">
 {% endblock %}
 {% block preferencesFrame %}
     {% if filledEvents is defined and filledEvents == true %}
@@ -35,11 +10,11 @@
 <div class="container">
     <form role="form" action="{{ path('events') }}" method="post">
         <div class="row">
-            <div class="form-group col-3">
+            <div class="form-group col-12 col-sm-3">
                 <span for="municipio" class="h4">Municipio: </span>
                 <input class="form-control" name="municipio" id="municipio" required/>
             </div>
-            <div class="form-group col-4">
+            <div class="form-group col-12 col-sm-3">
                 <span for="fecha" class="h4">Fecha: </span>
                 <div class="input-group date" id="datetimepicker" data-target-input="nearest">
                     <input type="text" name="fecha" class="form-control datetimepicker-input" data-target="#datetimepicker" />
@@ -48,14 +23,14 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group col-5">
+            <div class="form-group col-12 col-sm-6">
                 <span for="subscribers" class="h4">Aforo máximo: </span>
                 <input type='number' class="form-control" name="subscribers" min="10"/>
             </div>
         </div>
 
         <div class="row">
-            <div class="form-group col-12">
+            <div class="form-group col-12 col-sm-12">
                 <span for="descripcion" class="h4">Descripcion: </span>
                 <textarea class="form-control" id="descripcion" maxlength="100" name="descripcion" required>Descripcion</textarea>
                 <span>Max 100 carácteres.</span>
@@ -63,7 +38,7 @@
         </div>
 
         <div class="row">
-            <div class="form-group col-6">
+            <div class="form-group col-12 col-sm-12">
                 <span for="tag" class="h4">Busca tus tags:</span>
                 <input class="form-control" name="tag" id="tag"/><input type="button" name="Buscar" value="Buscar" class="btn" id="searchTags" />
             </div>
@@ -81,61 +56,59 @@
 {% block javascript %}
     {{ parent() }}
 <script src="{{ asset('js/Events/datetimepicker.js') }}"></script>
-<script src="{{ asset('js/Events/tags.js') }}"></script>
-<script>
-    var x = 0;
-    document.getElementById('searchTags').onclick = function(){
-        var tagName = document.getElementById('tag').value;
-        var url = '{{ path('tags', { 'nameLike': 'tagName' })}}';
-        url = url.replace("tagName", tagName);
+<script >
+var x = 0;
+document.getElementById('searchTags').onclick = function(){
+  var tagName = document.getElementById('tag').value;
+  var url = '{{ path("tags", { "nameLike": "tagName" })}}';
+  url = url.replace("tagName", tagName);
 
-        $.ajax({
-        method: "GET",
-        url: url,
-        dataType: 'json',
-        success: function(data){
-            var tags = JSON.parse(data);
-            var checkedTags = [];
-            $("input:checkbox:not(:checked)").parent().remove();
-            $.map($("input:checkbox:checked"), function(checkbox){
-                checkedTags.push($(checkbox).attr("name"))
-            });
-            tags.forEach(function(tag){
-                console.log(tag);
-                if($.inArray(tag.name, checkedTags) != -1){}
-                else{
-                    var tagButton = document.createElement("label");
-                    var tagCheckbox = document.createElement("input");
-                    tagButton.appendChild(tagCheckbox);
-                    tagButton.appendChild(document.createTextNode(tag.name));
-                    tagButton.className+="tag-button";
-                    tagButton.setAttribute("id", "checkboxLabel"+x);
-                    tagButton.setAttribute("onclick", "changeColor("+x+")");
-                    tagCheckbox.setAttribute("type", "checkbox");
-                    tagCheckbox.setAttribute("value", tag.id);
-                    tagCheckbox.setAttribute("class", "tagCheckbox");
-                    tagCheckbox.setAttribute("name", 'checkboxes[]');
-                    tagCheckbox.setAttribute("id", "checkboxId"+x);
-                    document.getElementById('tagsList').appendChild(tagButton);
-                    x++;
-                }
-            });
-        }
-    });
-    };
-    function changeColor(id){
-        this.event.preventDefault();
-        var checkbox = document.getElementById("checkboxId"+id);
-        var tag = document.getElementById("checkboxLabel"+id);
-        if(!checkbox.checked){
-            tag.classList.add("tag-checked");
-            checkbox.checked = true;
-        }
+  $.ajax({
+    method: "GET",
+    url: url,
+    dataType: 'json',
+    success: function(data){
+      var tags = JSON.parse(data);
+      var checkedTags = [];
+      $("input:checkbox:not(:checked)").parent().remove();
+      $.map($("input:checkbox:checked"), function(checkbox){
+        checkedTags.push($(checkbox).attr("name"))
+      });
+      tags.forEach(function(tag){
+        if($.inArray(tag.name, checkedTags) != -1){}
         else{
-            tag.classList.remove("tag-checked");
-            checkbox.checked = false;
+          var tagButton = document.createElement("label");
+          var tagCheckbox = document.createElement("input");
+          tagButton.appendChild(tagCheckbox);
+          tagButton.appendChild(document.createTextNode(tag.name));
+          tagButton.className+="tag-button";
+          tagButton.setAttribute("id", "checkboxLabel"+x);
+          tagButton.setAttribute("onclick", "changeColor("+x+")");
+          tagCheckbox.setAttribute("type", "checkbox");
+          tagCheckbox.setAttribute("value", tag.id);
+          tagCheckbox.setAttribute("class", "tagCheckbox");
+          tagCheckbox.setAttribute("name", 'checkboxes[]');
+          tagCheckbox.setAttribute("id", "checkboxId"+x);
+          document.getElementById('tagsList').appendChild(tagButton);
+          x++;
         }
-
+      });
     }
+  });
+};
+function changeColor(id){
+  this.event.preventDefault();
+  var checkbox = document.getElementById("checkboxId"+id);
+  var tag = document.getElementById("checkboxLabel"+id);
+  if(!checkbox.checked){
+    tag.classList.add("tag-checked");
+    checkbox.checked = true;
+  }
+  else{
+    tag.classList.remove("tag-checked");
+    checkbox.checked = false;
+  }
+
+}
 </script>
 {% endblock %}

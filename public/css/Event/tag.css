@@ -1,0 +1,24 @@
+.tagCheckbox{
+    display:none;
+}
+#tagsArea span{
+    margin: 6px;
+}
+.tag-button{
+    display: inline-flex;
+    color: #0098ab;
+    border: 1px solid #0098ab;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    transition: background .15s;
+    cursor: pointer;
+    box-sizing: border-box;
+    padding: 8px 32px;
+    font-size: 14px;
+    line-height: 1.43;
+}
+.tag-checked{
+    background-color: #0098ab;
+    color: #fff;
+}

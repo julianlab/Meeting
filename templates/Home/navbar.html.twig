@@ -1,11 +1,25 @@
-<nav class="navbar bg-dark fixed-top d-flex">
+<nav class="navbar bg-dark fixed-top d-flex" id="navbar">
+	<div class="responsiveNavbar" id="responsiveNavbar">
+		<a href="{{ path('home') }}" class="responsiveLink">Home</a>
+		<a href="{{ path('events') }}" class="responsiveLink">Crear evento</a>
+		<a href="{{ path('friends') }}" class="responsiveLink">Amigos</a>
+		<a href="{{ path('perfil') }}" class="responsiveLink">Preferencias</a>
+		<a href="{{ path('logout') }}" class="responsiveLink">Log out</a>
+	</div>
 	<div class="btn-group" role="group">
-		<a class="btn btn-light" href="{{ path('home') }}">Index</a>
+		<a class="btn btn-light" href="{{ path('home') }}">Home</a>
 		<a class="btn btn-light" href="{{ path('events') }}">Crear evento</a>
 		<a class="btn btn-light" href="{{ path('friends') }}">Amigos</a>
+
+	</div>
+	<div class="md-form mt-0">
+		<div><input class="form-control" type="text" placeholder="Search" aria-label="Search"></div>
 	</div>
 	<div class="btn-group" role="group">
 		<a class="btn btn-light" href="{{ path('perfil') }}">Preferencias</a>
 		<a class="btn btn-light" href="{{ path('logout') }}">Log out</a>
 	</div>
+		<a href="javascript:void(0);" class="icon" onclick="collapseSlide()">
+			<i class="fa fa-bars"></i>
+		</a>
 </nav>
