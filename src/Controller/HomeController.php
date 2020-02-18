@@ -30,7 +30,7 @@ class HomeController extends Controller
     /**
      * @Route("/register", name="register")
      */
-    /*public function register()
+    public function register()
     {
         $em = $this->getDoctrine()->getManager();
         $request = Request::createFromGlobals();
@@ -47,7 +47,7 @@ class HomeController extends Controller
             $em->flush();
         }
         return $this->render("Home/register.html.twig");
-    }*/
+    }
 }
 
 ?>
