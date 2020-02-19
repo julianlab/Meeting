@@ -14,6 +14,19 @@ use Symfony\Component\Serializer\Serializer;
 
 class AjaxController extends Controller
 {
+
+    public function searchEvents(String $value){
+        $request = Request::createFromGlobals();
+        $em=$this->getDoctrine()->getManager();
+        $eventos = $em->getRepository('App:Evento')->findBy(array('title'=>$value));
+        $respuesta = new JsonResponse();
+        $respuesta->setData(
+            array('response'=>'success',
+                'eventos'=>$serializer->serialize($eventos,'json')
+            )
+        );
+    }
+
     /**
      * @Route("/ajax_provincias", name="ajax_provincias")
      *
@@ -34,7 +47,9 @@ class AjaxController extends Controller
 
             $respuesta->setData(
                 array('response'=>'success',
-                    'provincias'=>$serializer->serialize($provincias,'json')));
+                    'provincias'=>$serializer->serialize($provincias,'json'
+                ))
+            );
         }
         return $respuesta;
     }

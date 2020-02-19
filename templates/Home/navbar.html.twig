@@ -13,7 +13,8 @@
 
 	</div>
 	<div class="md-form mt-0">
-		<div><input class="form-control" type="text" placeholder="Search" aria-label="Search"></div>
+		<div><input id="searchBox" class="form-control" type="text" placeholder="Search" aria-label="Search"></div>
+		<div id="result"></div>
 	</div>
 	<div class="btn-group" role="group">
 		<a class="btn btn-light" href="{{ path('perfil') }}">Preferencias</a>
@@ -23,3 +24,41 @@
 			<i class="fa fa-bars"></i>
 		</a>
 </nav>
+{% block javascript %}
+<script>
+var searchBox = document.getElementById("searchBox"),
+	result = document.getElementById("result");
+var ajax = null;
+var loadedEvents;
+
+searchBox.onkeyup = function(){
+	var val = this.value;
+	val = val.replace(/^\s|\s $/, "");
+
+	if(val !== ""){
+		searchForEvents(val);
+	}
+}
+function searchForEvents(value){
+	$.ajax({
+		method:"POST",
+		data: value,
+		url:"{{ path('searchEvents') }}",
+		dataType:'json',
+		success: function(data){
+			var results = JSON.parse(data.events);
+			putEvents(results);
+		}
+	})
+}
+function putEvents(events){
+	var result = document.getElementById('result');
+	foreach(event in events){
+		var node = document.createElement("div");
+		var textnode = document.createTextNode(event.title);
+		node.appendChild(textnode);
+		result.appendChild(node);
+	}
+}
+</script>
+{% endblock %}
