@@ -35,6 +35,7 @@ class EventsController extends Controller
         if($request->getMethod()=='POST') {
             $event = new Evento();
             $date = new \DateTime($request->request->get('fecha'));
+            $event->setTitle($request->request->get('title'));
             $event->setNameCreador($this->getUser()->getName());
             $event->setMailCreador($this->getUser()->getEmail());
             $event->setMunicipioId($request->request->get('municipio'));
@@ -98,7 +99,26 @@ class EventsController extends Controller
             'subscribers' => $subscribers
         ]);
     }
-
+    /**
+    * @Route("/eventFromId/{id}", name="eventFromId")
+    **/
+    public function eventFromId($id){
+        $em=$this->getDoctrine()->getManager();
+        $qb = $em->createQueryBuilder();
+        $qb->select('event')
+            ->from('App:Evento', 'event')
+            ->where('event.id = :id')
+            ->setParameter('id', $id);
+        $query = $qb->getQuery();
+        $event = $query->getResult();
+        //$event = new Evento($event);
+        //die(var_dump($event[0]));
+        $this->event($event[0]);
+        $response = $this->forward('App\Controller\EventsController::event', [
+            'event'  => $event[0],
+        ]);
+        return $response;
+    }
 
     /**
      * @Route("/join-event/{id}", name="joinEvent")

@@ -17,7 +17,7 @@ class HomeController extends Controller
     public function home()
     {
         //$form = $this->createForm(LoginType::class);
-        return $this->render('Home/index.html.twig', []);
+        return $this->render('Home/index.html.twig', ['request_ajax'=>false]);
     }
     /**
      * @Route("/login", name="login")

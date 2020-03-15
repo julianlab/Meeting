@@ -7,8 +7,10 @@
 	<div class="main-content">
 		<div class="container-fluid">
 			<div class="row">
-				{% block socialPanel %}{% endblock %}
-				{% block contenido %}{% endblock %}
+				{% block socialPanel %}{{ render(controller('App\\Controller\\EventsController::socialPanel'))}}{% endblock %}
+				<div class="col-md-9">
+					{% block contenido %}{% endblock %}
+				</div>
 			</div>
 		</div>
 	</div>

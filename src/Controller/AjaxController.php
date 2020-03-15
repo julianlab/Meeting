@@ -14,19 +14,37 @@ use Symfony\Component\Serializer\Serializer;
 
 class AjaxController extends Controller
 {
-
-    public function searchEvents(String $value){
+    /**
+    * @Route("/searchEvents", name="searchEvents")
+    */
+    public function searchEvents(){
         $request = Request::createFromGlobals();
-        $em=$this->getDoctrine()->getManager();
-        $eventos = $em->getRepository('App:Evento')->findBy(array('title'=>$value));
-        $respuesta = new JsonResponse();
-        $respuesta->setData(
-            array('response'=>'success',
-                'eventos'=>$serializer->serialize($eventos,'json')
-            )
-        );
+        if($request->getMethod()=='POST') {
+            $value = $request->request->get('searchBox');
+            $em=$this->getDoctrine()->getManager();
+            $searchFor = $request->request->get('value');
+            $query = $em->createQuery('SELECT e FROM App:Evento e WHERE e.title LIKE :value');
+            $query->setParameter('value', '%'.$searchFor.'%');
+            $eventos = $query->getResult();
+            $response = [];
+            foreach($eventos as $evento){
+                array_unshift($response,[
+                    $evento->getId(),
+                    $evento->getTitle(),
+                    $evento->getFecha()
+                ]);
+            }
+            $respuesta = new JsonResponse();
+            $respuesta->setData(
+                array('response'=>'success',
+                    'request_ajax'=> true,
+                    'eventsObjects'=>$eventos,
+                    'eventos'=>$response)
+            );
+        }
+        return $respuesta;
     }
-
+    
     /**
      * @Route("/ajax_provincias", name="ajax_provincias")
      *

@@ -1,3 +1,5 @@
+
+
 <nav class="navbar bg-dark fixed-top d-flex" id="navbar">
 	<div class="responsiveNavbar" id="responsiveNavbar">
 		<a href="{{ path('home') }}" class="responsiveLink">Home</a>
@@ -12,10 +14,13 @@
 		<a class="btn btn-light" href="{{ path('friends') }}">Amigos</a>
 
 	</div>
-	<div class="md-form mt-0">
-		<div><input id="searchBox" class="form-control" type="text" placeholder="Search" aria-label="Search"></div>
-		<div id="result"></div>
-	</div>
+	<form role="form" action="{{ path('search') }}"  method="post" class="md-form mt-0" id="searchForm">
+		<div>
+			<input id="searchBox" class="form-control form-control-inline" type="text" placeholder="Search" aria-label="Search" name="searchBox">
+			<button type="submit" class="searchButton"><i class="fa fa-search"></i></button>
+		</div>
+		<div id="results"></div>
+	</form>
 	<div class="btn-group" role="group">
 		<a class="btn btn-light" href="{{ path('perfil') }}">Preferencias</a>
 		<a class="btn btn-light" href="{{ path('logout') }}">Log out</a>
@@ -30,35 +35,90 @@ var searchBox = document.getElementById("searchBox"),
 	result = document.getElementById("result");
 var ajax = null;
 var loadedEvents;
+document.addEventListener('DOMContentLoaded', function(){ 
+	var eventsArray = [];
 
-searchBox.onkeyup = function(){
-	var val = this.value;
-	val = val.replace(/^\s|\s $/, "");
-
-	if(val !== ""){
-		searchForEvents(val);
+    searchBox.onkeyup = function(){
+		var val = this.value;
+		val = val.replace(/^\s|\s $/, "");
+		if(val !== ""){
+			searchForEvents(val);
+		}
 	}
-}
+
+}, false);
+
 function searchForEvents(value){
 	$.ajax({
 		method:"POST",
-		data: value,
+		data: {value},
 		url:"{{ path('searchEvents') }}",
 		dataType:'json',
 		success: function(data){
-			var results = JSON.parse(data.events);
-			putEvents(results);
+			clearEvents();
+			eventsArray = data.eventos
+			putEvents(eventsArray);
 		}
 	})
 }
+function clearEvents(){
+	var results = document.getElementById('results');
+	results.innerHTML = '';
+}
+
 function putEvents(events){
-	var result = document.getElementById('result');
-	foreach(event in events){
-		var node = document.createElement("div");
-		var textnode = document.createTextNode(event.title);
-		node.appendChild(textnode);
-		result.appendChild(node);
+	var result = document.getElementById('results');
+	for(i=0; i<events.length;i++){
+		var id = events[i][0];
+		var href = '{{ path("eventFromId", {"id": "eventId"}) }}';
+		href = href.replace("eventId", id);
+
+		var eventContainer = document.createElement("div");
+		var eventLink = document.createElement("a");
+		eventContainer.setAttribute('class', 'result');
+		eventLink.setAttribute('class', 'resultLink');
+		eventLink.setAttribute('href', href);
+		var textnode = document.createTextNode(events[i][1]);
+		eventLink.appendChild(textnode);
+		eventContainer.appendChild(eventLink);
+		result.appendChild(eventContainer);
 	}
 }
 </script>
+{% endblock %}
+{% block stylesheets %}
+<style type="text/css">
+	#results{
+		padding-top: 10px;
+		position:absolute;
+		width: 200px;
+		height: 100px;
+		overflow: auto;
+	}
+	.result{
+		cursor: pointer;
+		overflow-y: auto;
+		max-width: 200px;
+		border-bottom: 1px solid #ccc;
+		background: #fff;
+	}
+	.resultLink{
+		display:block;
+		line-height: 1.34;
+		font-size: 17px;
+		color: #1d2129;
+		font-weight: 600;
+	}
+	.resultLink:hover{
+		text-decoration: none;
+	}
+	.form-control-inline{
+		display: inline;
+		width: auto;
+	}
+	.searchButton{
+		height: 37px;
+   		width: 30px;
+	}
+</style>
 {% endblock %}
