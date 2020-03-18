@@ -1,25 +1,46 @@
 {% extends 'layout.html.twig' %}
 {% block contenido %}
 	<div class="row">
-		<div class="searchForEvents">
-			<h6>Buscar eventos por palabras clave</h6>
-			<form role="form" action="{{ path('search') }}"  method="post" class="md-form mt-0" id="searchForm">
-				<input type="text" name="searchBox" id="searchBox">
-				<button type="submit">Buscar</button>
-			</form>
+		<div class="searchForEvents col-md-6">
+			<div class="mx-auto searchBox">
+				<h6>Buscar eventos por palabras clave</h6>
+				<form role="form" action="{{ path('search') }}"  method="post" class="md-form mt-0" id="searchEventsForm">
+					<input type="text" name="searchBox" id="searchBox">
+					<button type="submit">Buscar</button>
+				</form>
+			</div>
 		</div>
-		<div class="searchForUsers">
-			<h6>Buscar usuarios por palabras clave</h6>
-			<form role="form" action="{{ path('searchUsers') }}"  method="post" class="md-form mt-0" id="searchForm">
-				<input type="text" name="searchBox" id="searchBox">
-				<button type="submit">Buscar</button>
-			</form>
+		<div class="searchForUsers col-md-6">
+			<div class="mx-auto searchBox">
+				<h6>Buscar usuarios por palabras clave</h6>
+				<form role="form" action="{{ path('users') }}"  method="post" class="md-form mt-0" id="searchUsersForm">
+					<input type="text" name="searchBox" id="searchBox">
+					<button type="submit">Buscar</button>
+				</form>
+			</div>
 		</div>
 	</div>
-{% for event in events %}
-	<span>{{ event.title }}</span><br>
-{% endfor %}
+	<div class="container text-center">
+		{% if searchResult == 'events' %}
+			{% for event in events %}
+				<span>{{ event.title }}</span><br>
+			{% endfor %}
+		{% else %}
+			{% for user in users %}
+				<span>{{ user.name }}</span>
+			{% endfor %}
+		{% endif %}
+	</div>
+	
 
 
 {% endblock %}
 
+{% block stylesheets %}
+	{{ parent() }}
+	<style type="text/css">
+		.searchBox{
+			width: 250px;
+		}
+	</style>
+{% endblock %}

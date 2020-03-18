@@ -27,28 +27,32 @@ class SearchController extends Controller
             
         }
         return $this->render('search/search.html.twig', [
+            'searchResult' => 'events',
             'events' => $eventos,
         ]);
     }
     /**
-     * @Route("/search", name="searchUsers")
+     * @Route("/search/users", name="users")
      */
     public function searchUsers()
     {
         $request = Request::createFromGlobals();
         if($request->getMethod()=='POST') {
-            $eventos = [];
+            $users = [];
             $em=$this->getDoctrine()->getManager();
             $searchFor = $request->request->get('searchBox');
+            $currentUser = $this->getUser()->getId();
             if ($searchFor != "") {
-                $query = $em->createQuery('SELECT u FROM App:User u WHERE u.name LIKE :value');
+                $query = $em->createQuery('SELECT u FROM App:User u WHERE u.name LIKE :value AND u.id NOT LIKE :currentUser');
                 $query->setParameter('value', '%'.$searchFor.'%');
-                $eventos = $query->getResult();
+                $query->setParameter('currentUser', $currentUser);
+                $users = $query->getResult();
             }
             
         }
         return $this->render('search/search.html.twig', [
-            'events' => $eventos,
+            'searchResult' => 'users',
+            'users' => $users,
         ]);
     }
 }
