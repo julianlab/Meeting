@@ -19,7 +19,7 @@
 			<input id="searchBox" class="form-control form-control-inline" type="text" placeholder="Search" aria-label="Search" name="searchBox">
 			<button type="submit" class="searchButton"><i class="fa fa-search"></i></button>
 		</div>
-		<div id="results"></div>
+		<div id="results" onfocusout="resultsFocusOut()"></div>
 	</form>
 	<div class="btn-group" role="group">
 		<a class="btn btn-light" href="{{ path('perfil') }}">Preferencias</a>
@@ -37,7 +37,7 @@ var ajax = null;
 var loadedEvents;
 document.addEventListener('DOMContentLoaded', function(){ 
 	var eventsArray = [];
-
+    
     searchBox.onkeyup = function(){
 		var val = this.value;
 		val = val.replace(/^\s|\s $/, "");
@@ -48,11 +48,16 @@ document.addEventListener('DOMContentLoaded', function(){
 
 }, false);
 
+function resultsFocusOut(){
+	document.getElementById("results").style.display = "none";
+
+}
+
 function searchForEvents(value){
 	$.ajax({
 		method:"POST",
 		data: {value},
-		url:"{{ path('searchEvents') }}",
+		url:"{{ path('searchFromNavbar') }}",
 		dataType:'json',
 		success: function(data){
 			clearEvents();
@@ -68,6 +73,8 @@ function clearEvents(){
 
 function putEvents(events){
 	var result = document.getElementById('results');
+	result.style.display = "block";
+	result.focus();
 	for(i=0; i<events.length;i++){
 		var id = events[i][0];
 		var href = '{{ path("eventFromId", {"id": "eventId"}) }}';
@@ -89,6 +96,7 @@ function putEvents(events){
 {% block stylesheets %}
 <style type="text/css">
 	#results{
+		display: none;
 		padding-top: 10px;
 		position:absolute;
 		width: 200px;

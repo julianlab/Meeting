@@ -5,16 +5,45 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
-
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class SearchController extends Controller
 {
     /**
-     * @Route("/search", name="search")
+     * @Route("/searchFromNavbar", name="searchFromNavbar")
      */
-    public function index()
+    public function searchFromNavbar()
     {
     	$request = Request::createFromGlobals();
+        if($request->getMethod()=='POST') {
+            $value = $request->request->get('searchBox');
+            $em=$this->getDoctrine()->getManager();
+            $searchFor = $request->request->get('value');
+            $qb = $em->createQueryBuilder();
+            $query = $em->createQuery('SELECT e FROM App:Evento e WHERE e.title LIKE :value');
+            $query->setParameter('value', '%'.$searchFor.'%');
+            $eventos = $query->getResult();
+            $response = [];
+            foreach($eventos as $evento){
+                array_unshift($response,[
+                    $evento->getId(),
+                    $evento->getTitle()
+                ]);
+            }
+            $respuesta = new JsonResponse();
+            $respuesta->setData(
+                array('response'=>'success',
+                    'eventos'=>$response)
+            );
+        }
+        return $respuesta;
+    }
+    /**
+     * @Route("/search", name="search")
+     */
+    public function searchEvents()
+    {
+        $request = Request::createFromGlobals();
         if($request->getMethod()=='POST') {
             $eventos = [];
             $em=$this->getDoctrine()->getManager();

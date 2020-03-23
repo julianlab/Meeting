@@ -9,7 +9,7 @@
 .navbar .icon {
     display:none;
 }
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 750px) {
     .navbar a {display: none;}
     .navbar a.icon {
         float: right;
@@ -17,7 +17,7 @@
     }
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 750px) {
     .navbar .responsive {position: relative;}
     .navbar .responsive .icon {
         position: absolute;
@@ -31,10 +31,7 @@
     }
 }
 
-@media screen and (max-width: 600px){
-    .navbar{
-        padding: 1rem 1rem;
-    }
+@media screen and (max-width: 750px){
     .social-panel{
         display: none;
     }
