@@ -58,6 +58,13 @@ class User extends BaseUser
      */
     private $events_joined;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Tag")
+     */
+    private $interests;
+
+
+
     public function __construct(){
         parent::__construct();
         $this->myFriends = new ArrayCollection();
@@ -65,6 +72,7 @@ class User extends BaseUser
         $this->events = new ArrayCollection();
         $this->eventos = new ArrayCollection();
         $this->events_joined = new ArrayCollection();
+        $this->interests = new ArrayCollection();
         //my own logic xd
     }
 
@@ -212,6 +220,32 @@ class User extends BaseUser
     {
         if ($this->events_joined->contains($eventsJoined)) {
             $this->events_joined->removeElement($eventsJoined);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Tag[]
+     */
+    public function getInterests(): Collection
+    {
+        return $this->interests;
+    }
+
+    public function addInterest(Tag $interest): self
+    {
+        if (!$this->interests->contains($interest)) {
+            $this->interests[] = $interest;
+        }
+
+        return $this;
+    }
+
+    public function removeInterest(Tag $interest): self
+    {
+        if ($this->interests->contains($interest)) {
+            $this->interests->removeElement($interest);
         }
 
         return $this;

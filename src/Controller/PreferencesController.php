@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class PreferencesController extends AbstractController
 {
@@ -107,6 +108,7 @@ class PreferencesController extends AbstractController
     {
         return $this->render('Preferences/notificaciones.html.twig',[]);
     }
+    
     /**
      * @Route("conexiones", name="conexiones")
      */

@@ -3,5 +3,125 @@
 <div class="preferences-content">
     <h3>Mis opciones de notificaciones</h3>
     
+    <p>Para recibir notificaciones, primero has de configurar tus gustos. Por favor, dinos qué buscas en nuestra web.</p>
 </div>
+<div class="row">
+	<div class="col-6">
+		<input type="text" name="interests" id="interests">
+		<div id="interestsResults" onfocusout="interestsResultsOnFocusOut()"></div>
+	</div>
+	<div class="col-6">
+		<form enctype="application/json" role="form" action="{{ path('persistInterests') }}" method="post" class="md-form mt-0" id="interestsForm">
+			<input type="submit" value="Go" id="formSubmit" disabled>
+		</form>
+	</div>
+</div>
+{% endblock %}
+{% block javascript %}
+{{ parent() }}
+<script type="text/javascript">
+	var interests = document.getElementById("interests"),
+	options = document.getElementById("options");
+	var interestsArray = [];
+	document.addEventListener('DOMContentLoaded', function(){ 	    
+	    interests.onkeyup = function(){
+			var tag = this.value;
+			tag = tag.replace(/^\s|\s $/, "");
+			if(tag !== ""){
+				searchForInterests(tag);
+			}
+		}
+	}, false);
+
+	function interestsResultsOnFocusOut(){
+		document.getElementById("interestsResults").style.display = "none";
+	}
+
+	function searchForInterests(tag){
+	$.ajax({
+		method:"POST",
+		data: {tag},
+		url:"{{ path('searchForInterests') }}",
+		dataType:'json',
+		success: function(data){
+			clearInterests();
+			putInterests(data.tags);
+		}
+	})
+}
+
+function clearInterests(){
+	var interests = document.getElementById('interestsResults');
+	interests.innerHTML = '';
+}
+
+function putInterests(tags){
+	var interests = document.getElementById('interestsResults');
+	interests.style.display = "block";
+	interests.focus();
+	for(i=0; i<tags.length;i++){
+		var id = tags[i].id;
+		var tagContainer = document.createElement("div");
+		tagContainer.setAttribute('id', 'interest'+tags[i].id);
+		tagContainer.setAttribute('class', 'interest');
+		tagContainer.setAttribute('onclick', 'setInterest("'+tags[i].id+'", "'+tags[i].name+'")');
+		var textnode = document.createTextNode(tags[i].name);
+		tagContainer.appendChild(textnode);
+		interests.appendChild(tagContainer);
+	}
+}
+
+function setInterest(tagId, tagName){
+
+	if(!checkIfSelected(tagName)){
+		var interestsForm = document.getElementById('interestsForm');
+		var interestInput = document.createElement('input');
+		interestInput.value = tagName;
+		//interestInput.disabled = true;
+		interestInput.setAttribute('class', 'd-block disable');
+		interestInput.setAttribute('type', 'text');
+		interestInput.setAttribute('name', tagId);
+		interestsForm.insertBefore(interestInput, interestsForm.firstChild);
+		document.getElementById('formSubmit').disabled = false;
+		interestsArray.push({'id': tagId});
+	}
+	
+}
+
+function checkIfSelected(tagName){
+	var isSelected = false;
+	var children = document.getElementById('interestsForm').children;
+	for(i=0;i<children.length;i++){
+		if(tagName == children[i].value){
+			isSelected = true;
+		}
+	}
+	return isSelected;
+}
+</script>
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+<style type="text/css">
+	.disable{
+		pointer-events:none;
+		background:grey;
+	}
+	#interestsResults{
+		display: none;
+		padding-top: 10px;
+		position:absolute;
+		width: 200px;
+		height: 100px;
+		overflow: auto;
+	}
+	.interest{
+		cursor: pointer;
+		overflow-y: auto;
+		max-width: 200px;
+		border-bottom: 1px solid #ccc;
+		background: #fff;
+	}
+</style>
 {% endblock %}
