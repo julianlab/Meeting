@@ -59,11 +59,9 @@ class User extends BaseUser
     private $events_joined;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Tag")
+     * @ORM\OneToMany(targetEntity="App\Entity\Interest", mappedBy="user", orphanRemoval=true)
      */
     private $interests;
-
-
 
     public function __construct(){
         parent::__construct();
@@ -73,7 +71,7 @@ class User extends BaseUser
         $this->eventos = new ArrayCollection();
         $this->events_joined = new ArrayCollection();
         $this->interests = new ArrayCollection();
-        //my own logic xd
+        $this->interest = new ArrayCollection();
     }
 
     public function getPhone(): ?int
@@ -226,28 +224,37 @@ class User extends BaseUser
     }
 
     /**
-     * @return Collection|Tag[]
+     * @return Collection|Interest[]
      */
     public function getInterests(): Collection
     {
         return $this->interests;
     }
 
-    public function addInterest(Tag $interest): self
+    public function addInterest(Interest $interest): self
     {
         if (!$this->interests->contains($interest)) {
             $this->interests[] = $interest;
+            $interest->setUser($this);
+            $interest->setEnabled(true);
         }
 
         return $this;
     }
 
-    public function removeInterest(Tag $interest): self
+    public function removeInterest(Interest $interest): self
     {
         if ($this->interests->contains($interest)) {
             $this->interests->removeElement($interest);
+            // set the owning side to null (unless already changed)
+            if ($interest->getUser() === $this) {
+                $interest->setUser(null);
+            }
         }
 
         return $this;
     }
+
+   
+
 }

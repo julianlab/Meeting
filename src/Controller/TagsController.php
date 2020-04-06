@@ -5,6 +5,8 @@ namespace App\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use App\Entity\Tag;
 
 class TagsController extends Controller
 {
@@ -14,6 +16,25 @@ class TagsController extends Controller
      */
     public function index()
     {
+        $response = new JsonResponse(array('name'=> 'name'));
+        return $response;
+    }
+    /**
+     * @Route("/addNewTag", name="addNewTag")
+     *
+     */
+    public function addNewTag()
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $request = Request::createFromGlobals();
+        $tag = $request->request->get('tag');
+
+        $newTag = new Tag;
+        $newTag->setName($tag);
+
+        $em->persist($newTag);
+        $em->flush();
         $response = new JsonResponse(array('name'=> 'name'));
         return $response;
     }

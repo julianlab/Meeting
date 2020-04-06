@@ -6,6 +6,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Entity\Interest;
+
 
 class InterestsController extends Controller
 {
@@ -50,22 +52,38 @@ class InterestsController extends Controller
     	$max = 0;
         $em = $this->getDoctrine()->getManager();
         $username = $this->getUser()->getUsername();
+        $user = $this->getUser();
         $request = Request::createFromGlobals();
         if($request->getMethod()=='POST'){
-            $user=$em->getRepository('App:User')->findOneBy(array('username' => $username));
+            //$user=$em->getRepository('App:User')->findOneBy(array('username' => $username));
             $tagsString = $request->getContent();
-
             while($endOfString == false){
             	$tagName = get_string_between($tagsString, '=', '&');
             	$tag=$em->getRepository('App:Tag')->findOneBy(array('name' => $tagName));
-            	$user->addInterest($tag);
+            	$newInterest = new Interest;
+            	$newInterest->setUser($user);
+            	$newInterest->setTag($tag);
+            	$newInterest->setEnabled(true);
+            	$newInterest->setName($tag->getName());
+            	$em->persist($newInterest);
+            	$user->addInterest($newInterest);
+            	$tag->addUserInterested($user);
+            	//$user->addInterest($tag);
 
             	$tagsString = substr_replace($tagsString, '', 0, strpos($tagsString, '&')+1);
             	if(strpos($tagsString, '&') === false){
             		$endOfString = true;
             		$tagName = substr($tagsString, 2);
             		$tag=$em->getRepository('App:Tag')->findOneBy(array('name' => $tagName));
-            		$user->addInterest($tag);
+            		$newInterest = new Interest;
+	            	$newInterest->setUser($user);
+	            	$newInterest->setTag($tag);
+	            	$newInterest->setEnabled(true);
+	            	$newInterest->setName($tag->getName());
+	            	$em->persist($newInterest);
+	            	$user->addInterest($newInterest);
+	            	$tag->addUserInterested($user);
+            		//$user->addInterest($tag);
             	}
             	$max = $max +1;
             }

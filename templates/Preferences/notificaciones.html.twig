@@ -1,12 +1,36 @@
 {% extends 'Home/preferencias.html.twig' %}
 {% block preferencesFrame %}
 <div class="preferences-content">
-    <h3>Mis opciones de notificaciones</h3>
-    
-    <p>Para recibir notificaciones, primero has de configurar tus gustos. Por favor, dinos qué buscas en nuestra web.</p>
+	<h3>Mis opciones de notificaciones</h3>
+	{% if interests == NULL %}
+	    <p>Para recibir notificaciones, primero has de configurar tus gustos. Por favor, dinos qué buscas en nuestra web.</p>
+	{% else %}
+		
+			<table class="table">
+				<thead class="thead-light">
+					<tr>
+						<th scope="col">Interés</th>
+						<th scope="col">Activar notificaciones</th>
+						<th scope="col">Borrar</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for interest in interests %}
+					<tr>
+						<td>{{ interest.name }}</td>
+						<td><input type="checkbox" name="disable{{ interest.id }}" {% if interest.enabled %}checked{% endif %}></td>
+						<td><input type="checkbox" name="remove{{ interest.id }}"></td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+	{% endif %}
+	<table class="table">
+
+
 </div>
 <div class="row">
-	<div class="col-6">
+	<div class="col-6" id="interestsCol">
 		<input type="text" name="interests" id="interests">
 		<div id="interestsResults" onfocusout="interestsResultsOnFocusOut()"></div>
 	</div>
@@ -45,19 +69,48 @@
 		dataType:'json',
 		success: function(data){
 			clearInterests();
+			if(data.tags == 0 && tag.length > 3){
+				clearAddNewInterest();
+				addNewInterest(tag);
+			}
 			putInterests(data.tags);
 		}
 	})
 }
-
+function clearAddNewInterest(){
+	var interestsCol = document.getElementById("interestsCol");
+	interestsCol.removeChild(interestsCol.lastChild);
+}
 function clearInterests(){
 	var interests = document.getElementById('interestsResults');
 	interests.innerHTML = '';
 }
 
+function addNewInterest(newTag){
+	var interests = document.getElementById('interestsResults');
+	interests.className = interests.className.replace(/interestsResultsVisible/, 'interestsResultsNotVisible');
+	var tag = '"'+newTag+'"';
+	var interestsCol = document.getElementById("interestsCol");
+	var addNewInterestText = document.createElement("p");
+	addNewInterestText.innerHTML = "El interés que estas buscando no existe. ¿Deseas <a onclick='addTag("+tag+")' href='#'>añadirlo</a> ahora?";
+	interestsCol.appendChild(addNewInterestText);
+}
+function addTag(tag){
+	$.ajax({
+		method:"POST",
+		data: {tag},
+		url:"{{ path('addNewTag') }}",
+		dataType:'json',
+		success: function(data){
+			searchForInterests(tag);
+			clearAddNewInterest();
+		}
+	})
+
+}
 function putInterests(tags){
 	var interests = document.getElementById('interestsResults');
-	interests.style.display = "block";
+	interests.className = interests.className.replace(/interestsResultsNotVisible/, 'interestsResultsVisible');
 	interests.focus();
 	for(i=0; i<tags.length;i++){
 		var id = tags[i].id;
@@ -108,8 +161,16 @@ function checkIfSelected(tagName){
 		pointer-events:none;
 		background:grey;
 	}
-	#interestsResults{
+	#interestsResultsNotVisible{
 		display: none;
+		padding-top: 10px;
+		position:absolute;
+		width: 200px;
+		height: 100px;
+		overflow: auto;
+	}
+	#interestsResultsVisible{
+		display: block;
 		padding-top: 10px;
 		position:absolute;
 		width: 200px;

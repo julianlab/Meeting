@@ -63,7 +63,6 @@ class FriendsController extends Controller
         $username = $this->getUser()->getId();
         $user=$em->getReference("App:Usuario",$username);
         $friendList = $user->getFriendList();
-        print_r($friendList);
         unset($friendList[$friendId]);
         $user->setFriendList($friendList);
         $em->flush();

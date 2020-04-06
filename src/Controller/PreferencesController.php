@@ -106,7 +106,13 @@ class PreferencesController extends AbstractController
      */
     public function notificaciones()
     {
-        return $this->render('Preferences/notificaciones.html.twig',[]);
+        $em = $this->getDoctrine()->getManager();
+        $user = $this->getUser();
+        $interests = $user->getInterests();
+        
+        return $this->render('Preferences/notificaciones.html.twig',[
+            'interests' => $interests
+        ]);
     }
     
     /**
