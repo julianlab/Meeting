@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Form\LoginType;
+use App\Form\UserType;
+use App\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -34,7 +36,17 @@ class PreferencesController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $username = $this->getUser()->getUsername();
         $request = Request::createFromGlobals();
-        if($request->getMethod()=='POST'){
+
+        $user = new User();
+        $user = $this->getUser();
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()){
+            $user = $form->getData();
+            $em->persist($user);
+            $em->flush();
+        }
+        /*if($request->getMethod()=='POST'){
             $user=$em->getRepository('App:User')->findOneBy(array('username' => $username));
             $user->setEmail($request->request->get('email'));
             $user->setName($request->request->get('name'));
@@ -43,8 +55,9 @@ class PreferencesController extends AbstractController
             $user->setPhone($request->request->get('phone'));
             $em->flush();
         }
-        $user=$em->getRepository('App:User')->findOneBy(array('username' => $username));
+        $user=$em->getRepository('App:User')->findOneBy(array('username' => $username));*/
         return $this->render("Preferences/perfil.html.twig", [
+            'form' => $form->createView(),
             'user' => $user,
         ]);
     }

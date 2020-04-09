@@ -1,6 +1,12 @@
 {% extends 'Home/preferencias.html.twig' %}
+
 {% block preferencesFrame %}
 <div class="preferences-content">
+
+{{ form_start(form, {'method': 'post', 'action': path('perfil')}) }}
+    {{ form(form) }}
+{{ form_end(form) }}
+{#
     <h3>Mi perfil</h3>
 	<form role="form" action="{{ path('perfil') }}" method="post">
         <div class="form-group">
@@ -29,5 +35,6 @@
         </div>
         <input type="submit" class="btn" name="submit" value="Guardar cambios">
 	</form>
+#}
 </div>
 {% endblock %}
