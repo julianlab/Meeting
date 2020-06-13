@@ -58,7 +58,7 @@ class PreferencesController extends AbstractController
         $user=$em->getRepository('App:User')->findOneBy(array('username' => $username));*/
         return $this->render("Preferences/perfil.html.twig", [
             'form' => $form->createView(),
-            'user' => $user,
+            //'user' => $user,
         ]);
     }
     /**

@@ -6,6 +6,7 @@ use App\Entity\Tag;
 use App\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use App\Form\LoginType;
+use App\Form\EventType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -25,13 +26,22 @@ class EventsController extends Controller
         $em=$this->getDoctrine()->getManager();
         $request = Request::createFromGlobals();
         $filledEvents = false;
-        $qb = $em->createQueryBuilder();
+        /*$qb = $em->createQueryBuilder();
         $qb->select('tags')
             ->from('App:Tag', 'tags')
             ->getQuery()
             ->getResult();
         $query = $qb->getQuery();
-        $tags = $query->getResult();
+        $tags = $query->getResult();*/
+
+        $event = new Evento();
+        $form = $this->createForm(EventType::class, $event);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()){
+            $event = $form->getData();
+
+        }
+
         if($request->getMethod()=='POST') {
             $event = new Evento();
             $date = new \DateTime($request->request->get('fecha'));
@@ -69,7 +79,8 @@ class EventsController extends Controller
         }
         return $this->render('Events/firstStep.html.twig',[
             'filledEvents'=>$filledEvents,
-            'tags'=>$tags
+            'form'=>$form->createView(),
+            //'tags'=>$tags
         ]);
     }
     /**
